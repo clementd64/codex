@@ -1,0 +1,8 @@
+overlay: 1.0.0
+info:
+  title: Fix vendor schema typing
+  version: 1.0.0
+actions:
+  - target: $.paths['/3/tv/{series_id}'].get.responses['200'].content['application/json'].schema.properties.seasons.items.properties.vote_average
+    update:
+      x-go-type: float32

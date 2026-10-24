@@ -1,0 +1,55 @@
+{
+  "dockerComposeFile": "compose.yaml",
+  "service": "devcontainer",
+  "workspaceFolder": "/workspace",
+  "postCreateCommand": "npm install",
+  "features": {
+    "ghcr.io/devcontainers/features/go:1": {},
+    "ghcr.io/devcontainers/features/node:2": {
+      "nodeGypDependencies": false
+    }
+  },
+  "remoteEnv": {
+    "VP_NODE_MANAGER": "no",
+    "VP_PM_MANAGER": "no",
+    "CGO_ENABLED": "0"
+  },
+  "forwardPorts": [5173],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bradlc.vscode-tailwindcss",
+        "drblury.protobuf-vsc",
+        "VoidZero.vite-plus-extension-pack"
+      ],
+      "settings": {
+        "files.associations": {
+          "*.css": "tailwindcss"
+        },
+        "editor.defaultFormatter": "oxc.oxc-vscode",
+        "[go]": {
+          "editor.defaultFormatter": "golang.go"
+        },
+        "[javascript]": {
+          "editor.defaultFormatter": "oxc.oxc-vscode"
+        },
+        "[javascriptreact]": {
+          "editor.defaultFormatter": "oxc.oxc-vscode"
+        },
+        "[typescript]": {
+          "editor.defaultFormatter": "oxc.oxc-vscode"
+        },
+        "[typescriptreact]": {
+          "editor.defaultFormatter": "oxc.oxc-vscode"
+        },
+        "oxc.disableNestedConfig": true,
+        "oxc.fmt.disableNestedConfig": true,
+        "editor.formatOnSave": true,
+        "editor.formatOnSaveMode": "file",
+        "editor.codeActionsOnSave": {
+          "source.fixAll.oxc": "explicit"
+        }
+      }
+    }
+  }
+}

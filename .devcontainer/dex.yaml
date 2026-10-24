@@ -1,0 +1,23 @@
+issuer: http://localhost:5173/dex
+
+storage:
+  type: memory
+
+web:
+  http: 0.0.0.0:5556
+
+oauth2:
+  skipApprovalScreen: true
+
+staticClients:
+  - id: codex
+    name: Codex development
+    public: true
+    redirectURIs:
+      - http://localhost:5173/login/callback
+      - http://127.0.0.1:5173/login/callback
+
+connectors:
+  - type: mockCallback
+    id: mock
+    name: Mock

@@ -1,0 +1,13 @@
+@import "tailwindcss" source("../../");
+@plugin "daisyui";
+@plugin "@iconify/tailwind4" {
+  scale: 1.4;
+}
+
+.bg-app {
+  @apply bg-base-100 dark:bg-base-300;
+}
+
+.bg-menu {
+  @apply bg-base-200;
+}

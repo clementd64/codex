@@ -1,0 +1,28 @@
+version: "2"
+overrides:
+  go:
+    overrides:
+      - db_type: "uuid"
+        go_type: "uuid.UUID"
+      - db_type: "uuid"
+        nullable: true
+        go_type:
+          import: "uuid"
+          type: "UUID"
+          pointer: true
+
+sql:
+  - engine: "postgresql"
+    queries: "internal/auth/query.sql"
+    schema: ".devcontainer/schema.sql"
+    gen:
+      go:
+        package: "authquery"
+        out: "internal/auth/query"
+  - engine: "postgresql"
+    queries: "internal/tvshow/query.sql"
+    schema: ".devcontainer/schema.sql"
+    gen:
+      go:
+        package: "tvshowquery"
+        out: "internal/tvshow/query"

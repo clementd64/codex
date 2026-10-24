@@ -1,0 +1,16 @@
+{
+  "name": "codex",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "check": "tsc && vp check",
+    "fmt": "vp fmt"
+  },
+  "devDependencies": {
+    "preact": "^11.0.1",
+    "typescript": "^7.0.2"
+  }
+}

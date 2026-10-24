@@ -1,0 +1,39 @@
+services:
+  devcontainer:
+    image: mcr.microsoft.com/devcontainers/base:bookworm
+    init: true
+    command: sleep infinity
+    volumes:
+      - ..:/workspace:cached
+      - go-mod-cache:/go
+    env_file: .env
+    environment:
+      GOMODCACHE: /go/pkg/mod
+      GOCACHE: /go/build-cache
+      VITE_OIDC_CLIENT_ID: codex
+      VITE_OIDC_DISCOVERY_ENDPOINT: /dex
+      VITE_OIDC_PROVIDER_NAME: Dex
+      DATABASE_URL: postgres://codex:codex@db:5432/codex?sslmode=disable
+      OIDC_DISCOVERY_ENDPOINT: http://localhost:5173/dex
+      OIDC_CLIENT_ID: codex
+
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: codex
+      POSTGRES_USER: codex
+      POSTGRES_PASSWORD: codex
+      POSTGRES_LOG_STATEMENT: all
+    volumes:
+      - db:/var/lib/postgresql
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+
+  dex:
+    image: ghcr.io/dexidp/dex:v2.45.1
+    command: [dex, serve, /etc/dex/config.yaml]
+    volumes:
+      - ./dex.yaml:/etc/dex/config.yaml:ro
+
+volumes:
+  db:
+  go-mod-cache:

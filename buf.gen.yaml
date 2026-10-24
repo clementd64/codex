@@ -1,0 +1,14 @@
+version: v2
+managed:
+  enabled: true
+plugins:
+  - local: [go, tool, protoc-gen-go]
+    out: internal
+    opt: module=github.com/clementd64/codex/internal
+  - local: [go, tool, protoc-gen-connect-go]
+    out: internal
+    opt: module=github.com/clementd64/codex/internal
+  - local: [npx, protoc-gen-es]
+    out: packages/proto
+    include_imports: true
+    opt: target=ts

@@ -1,0 +1,18 @@
+syntax = "proto3";
+package codex.auth;
+option go_package = "github.com/clementd64/codex/internal/auth/proto;auth";
+
+import "google/protobuf/empty.proto";
+
+service AuthService {
+  rpc Token(TokenRequest) returns (TokenResponse) {}
+}
+
+message TokenRequest {
+  string token = 1;
+}
+
+message TokenResponse {
+  string token = 1;
+  uint64 expiration = 2;
+}

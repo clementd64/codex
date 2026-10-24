@@ -1,0 +1,26 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "dev: front",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm -w front run dev",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "dev: go",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "go run .",
+      "cwd": "${workspaceFolder}"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "dev",
+      "configurations": ["dev: front", "dev: go"],
+      "stopAll": true
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "allowJs": false,
+    "strict": true,
+    "noUnusedLocals": true,
+    "types": ["vite/client"],
+    /* Preact Config */
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "skipLibCheck": true
+  }
+}
