@@ -1,5 +1,6 @@
 import { Code, ConnectError } from "@connectrpc/connect";
-import { goto, useLocation } from "design-system/components/router";
+import { Pagination } from "design-system/components/pagination";
+import { Redirect, useLocation } from "design-system/components/router";
 import { useClient } from "design-system/lib/client";
 import { countryCodeToFlag } from "design-system/lib/country";
 import { useAsync } from "design-system/lib/hook";
@@ -9,8 +10,13 @@ import { TvShowService } from "proto";
 export function Add() {
   const client = useClient(TvShowService);
 
-  const { searchParams } = useLocation();
+  const { searchParams, setSearchParams } = useLocation();
   const query = searchParams.get("q");
+
+  const page = Number(searchParams.get("p") ?? 1);
+  if (isNaN(page)) {
+    return <Redirect to="/tvshow/add" />;
+  }
 
   const { loading, data } = useAsync(
     async (signal) => {
@@ -18,9 +24,9 @@ export function Add() {
         return null;
       }
 
-      return client.search({ query }, { signal });
+      return client.search({ query, page }, { signal });
     },
-    [query, client],
+    [query, page, client],
   );
 
   const [input, setInput] = useState(query ?? "");
@@ -31,7 +37,7 @@ export function Add() {
         class="flex items-end"
         onSubmit={(e) => {
           e.preventDefault();
-          setParams(searchParams, { q: input });
+          setSearchParams({ q: input });
         }}
       >
         <fieldset class="fieldset py-0">
@@ -83,6 +89,14 @@ export function Add() {
           </div>
         ))}
       </div>
+
+      <div class="m-auto">
+        <Pagination
+          page={page}
+          total={data?.totalPages}
+          onNavigate={(page) => setSearchParams({ p: page })}
+        />
+      </div>
     </div>
   );
 }
@@ -133,18 +147,4 @@ function AddShowButton({ tmdbId, added }: { tmdbId: number; added: boolean }) {
       </button>
     </>
   );
-}
-
-export function setParams(searchParams: URLSearchParams, params: Record<string, unknown>) {
-  const p = new URLSearchParams(searchParams);
-
-  for (const [key, value] of Object.entries(params)) {
-    if (!value) {
-      p.delete(key);
-      continue;
-    }
-    p.set(key, value.toString());
-  }
-
-  goto(`?${p.toString()}`);
 }

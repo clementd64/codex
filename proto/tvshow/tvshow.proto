@@ -11,10 +11,14 @@ service TvShowService {
   rpc Delete(DeleteRequest) returns (google.protobuf.Empty) {}
 }
 
-message ListRequest {}
+message ListRequest {
+  int32 page = 1;
+}
 
 message ListResponse {
   repeated TvShow results = 1;
+  int32 page = 2;
+  int32 totalPages = 3;
 }
 
 message TvShow {
@@ -28,7 +32,7 @@ message TvShow {
 
 message SearchRequest {
   string query = 1;
-  optional int32 page = 2;
+  int32 page = 2;
 }
 
 message SearchResponse {

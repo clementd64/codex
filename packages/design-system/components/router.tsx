@@ -6,11 +6,28 @@ interface Route {
   component: ComponentType;
 }
 
+class LocationURL extends URL {
+  // arrow function to capture "this" (allow deconstruction)
+  setSearchParams = (params: Record<string, unknown>) => {
+    const p = new URLSearchParams(this.searchParams);
+
+    for (const [key, value] of Object.entries(params)) {
+      if (!value) {
+        p.delete(key);
+        continue;
+      }
+      p.set(key, value.toString());
+    }
+
+    goto(`?${p.toString()}`);
+  };
+}
+
 export function useLocation() {
-  const [url, setUrl] = useState(() => new URL(location.href));
+  const [url, setUrl] = useState(() => new LocationURL(location.href));
 
   useLayoutEffect(() => {
-    const onLocationChange = () => setUrl(new URL(location.href));
+    const onLocationChange = () => setUrl(new LocationURL(location.href));
     window.addEventListener("popstate", onLocationChange);
     onLocationChange();
     return () => window.removeEventListener("popstate", onLocationChange);

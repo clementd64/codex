@@ -89,24 +89,33 @@ func (q *Queries) ListAddedShowIDs(ctx context.Context, arg ListAddedShowIDsPara
 }
 
 const listShow = `-- name: ListShow :many
-select show.id, show.name, show.poster, show.firstAirDate::varchar, show.country, show.originalName
+select show.id, show.name, show.poster, show.firstAirDate, show.country, show.originalName,
+       ceil(count(*) over ()::numeric / $1)::bigint as total_pages
 from tvshow.show
 join tvshow.user_show on show.id = user_show.show_id
-where user_show.user_id = $1
+where user_show.user_id = $2
 order by show.name
+limit $1 offset $3
 `
 
-type ListShowRow struct {
-	ID               uuid.UUID
-	Name             string
-	Poster           sql.NullString
-	ShowFirstairdate string
-	Country          sql.NullString
-	Originalname     sql.NullString
+type ListShowParams struct {
+	Limit  int32
+	UserID uuid.UUID
+	Offset int32
 }
 
-func (q *Queries) ListShow(ctx context.Context, userID uuid.UUID) ([]ListShowRow, error) {
-	rows, err := q.db.QueryContext(ctx, listShow, userID)
+type ListShowRow struct {
+	ID           uuid.UUID
+	Name         string
+	Poster       sql.NullString
+	Firstairdate sql.NullTime
+	Country      sql.NullString
+	Originalname sql.NullString
+	TotalPages   int64
+}
+
+func (q *Queries) ListShow(ctx context.Context, arg ListShowParams) ([]ListShowRow, error) {
+	rows, err := q.db.QueryContext(ctx, listShow, arg.Limit, arg.UserID, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -118,9 +127,10 @@ func (q *Queries) ListShow(ctx context.Context, userID uuid.UUID) ([]ListShowRow
 			&i.ID,
 			&i.Name,
 			&i.Poster,
-			&i.ShowFirstairdate,
+			&i.Firstairdate,
 			&i.Country,
 			&i.Originalname,
+			&i.TotalPages,
 		); err != nil {
 			return nil, err
 		}

@@ -28,21 +28,34 @@ func (s *TvShowServer) List(
 	ctx context.Context,
 	req *tvshowpb.ListRequest,
 ) (*tvshowpb.ListResponse, error) {
+	if req.GetPage() < 1 {
+		return nil, connect.NewError(connect.CodeInvalidArgument, "page must be positive")
+	}
+
 	userID, err := auth.SubjectFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	list, err := s.query.ListShow(ctx, userID)
+	list, err := s.query.ListShow(ctx, tvshowquery.ListShowParams{
+		UserID: userID,
+		Limit:  25,
+		Offset: 25 * (req.GetPage() - 1),
+	})
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return &tvshowpb.ListResponse{}, nil
-		}
 		return nil, err
+	}
+	if len(list) == 0 {
+		return &tvshowpb.ListResponse{
+			Page:       1,
+			TotalPages: 1,
+		}, nil
 	}
 
 	res := &tvshowpb.ListResponse{
-		Results: make([]*tvshowpb.TvShow, len(list)),
+		Page:       int32(req.GetPage()),
+		TotalPages: int32(list[0].TotalPages),
+		Results:    make([]*tvshowpb.TvShow, len(list)),
 	}
 	for i, show := range list {
 		var poster *string
@@ -50,12 +63,17 @@ func (s *TvShowServer) List(
 			p := tmdb.PosterPath(show.Poster.String)
 			poster = &p
 		}
+		var firstAirDate *string
+		if show.Firstairdate.Valid {
+			date := show.Firstairdate.Time.Format(time.DateOnly)
+			firstAirDate = &date
+		}
 
 		res.Results[i] = &tvshowpb.TvShow{
 			Id:           show.ID.String(),
 			Name:         show.Name,
 			Poster:       poster,
-			FirstAirDate: &show.ShowFirstairdate,
+			FirstAirDate: firstAirDate,
 			Country:      &show.Country.String,
 			OriginalName: &show.Originalname.String,
 		}
@@ -72,11 +90,7 @@ func (s *TvShowServer) Search(
 		return nil, connect.NewError(connect.CodeInvalidArgument, "query required")
 	}
 
-	page := int32(1)
-	if req.Page != nil {
-		page = req.GetPage()
-	}
-	if page < 1 {
+	if req.GetPage() < 1 {
 		return nil, connect.NewError(connect.CodeInvalidArgument, "page must be positive")
 	}
 
@@ -87,7 +101,7 @@ func (s *TvShowServer) Search(
 
 	search, err := tmdb.Unwrap(s.tmdb.SearchTvWithResponse(ctx, &tmdb.SearchTvParams{
 		Query: req.GetQuery(),
-		Page:  page,
+		Page:  req.GetPage(),
 	}))
 	if err != nil {
 		slog.ErrorContext(ctx, "TMDB search failed", "error", err)

@@ -24,6 +24,7 @@ const (
 
 type ListRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Page          int32                  `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -58,9 +59,18 @@ func (*ListRequest) Descriptor() ([]byte, []int) {
 	return file_proto_tvshow_tvshow_proto_rawDescGZIP(), []int{0}
 }
 
+func (x *ListRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
 type ListResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Results       []*TvShow              `protobuf:"bytes,1,rep,name=results,proto3" json:"results,omitempty"`
+	Page          int32                  `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
+	TotalPages    int32                  `protobuf:"varint,3,opt,name=totalPages,proto3" json:"totalPages,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -100,6 +110,20 @@ func (x *ListResponse) GetResults() []*TvShow {
 		return x.Results
 	}
 	return nil
+}
+
+func (x *ListResponse) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ListResponse) GetTotalPages() int32 {
+	if x != nil {
+		return x.TotalPages
+	}
+	return 0
 }
 
 type TvShow struct {
@@ -189,7 +213,7 @@ func (x *TvShow) GetOriginalName() string {
 type SearchRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Query         string                 `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
-	Page          *int32                 `protobuf:"varint,2,opt,name=page,proto3,oneof" json:"page,omitempty"`
+	Page          int32                  `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -232,8 +256,8 @@ func (x *SearchRequest) GetQuery() string {
 }
 
 func (x *SearchRequest) GetPage() int32 {
-	if x != nil && x.Page != nil {
-		return *x.Page
+	if x != nil {
+		return x.Page
 	}
 	return 0
 }
@@ -482,10 +506,15 @@ var File_proto_tvshow_tvshow_proto protoreflect.FileDescriptor
 
 const file_proto_tvshow_tvshow_proto_rawDesc = "" +
 	"\n" +
-	"\x19proto/tvshow/tvshow.proto\x12\fcodex.tvshow\x1a\x1bgoogle/protobuf/empty.proto\"\r\n" +
-	"\vListRequest\">\n" +
+	"\x19proto/tvshow/tvshow.proto\x12\fcodex.tvshow\x1a\x1bgoogle/protobuf/empty.proto\"!\n" +
+	"\vListRequest\x12\x12\n" +
+	"\x04page\x18\x01 \x01(\x05R\x04page\"r\n" +
 	"\fListResponse\x12.\n" +
-	"\aresults\x18\x01 \x03(\v2\x14.codex.tvshow.TvShowR\aresults\"\xf3\x01\n" +
+	"\aresults\x18\x01 \x03(\v2\x14.codex.tvshow.TvShowR\aresults\x12\x12\n" +
+	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x1e\n" +
+	"\n" +
+	"totalPages\x18\x03 \x01(\x05R\n" +
+	"totalPages\"\xf3\x01\n" +
 	"\x06TvShow\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1b\n" +
@@ -497,11 +526,10 @@ const file_proto_tvshow_tvshow_proto_rawDesc = "" +
 	"\r_firstAirDateB\n" +
 	"\n" +
 	"\b_countryB\x0f\n" +
-	"\r_originalName\"G\n" +
+	"\r_originalName\"9\n" +
 	"\rSearchRequest\x12\x14\n" +
-	"\x05query\x18\x01 \x01(\tR\x05query\x12\x17\n" +
-	"\x04page\x18\x02 \x01(\x05H\x00R\x04page\x88\x01\x01B\a\n" +
-	"\x05_page\"z\n" +
+	"\x05query\x18\x01 \x01(\tR\x05query\x12\x12\n" +
+	"\x04page\x18\x02 \x01(\x05R\x04page\"z\n" +
 	"\x0eSearchResponse\x124\n" +
 	"\aresults\x18\x01 \x03(\v2\x1a.codex.tvshow.SearchTvShowR\aresults\x12\x12\n" +
 	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x1e\n" +
@@ -581,7 +609,6 @@ func file_proto_tvshow_tvshow_proto_init() {
 		return
 	}
 	file_proto_tvshow_tvshow_proto_msgTypes[2].OneofWrappers = []any{}
-	file_proto_tvshow_tvshow_proto_msgTypes[3].OneofWrappers = []any{}
 	file_proto_tvshow_tvshow_proto_msgTypes[5].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

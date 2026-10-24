@@ -12,12 +12,16 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file proto/tvshow/tvshow.proto.
  */
 export const file_proto_tvshow_tvshow: GenFile = /*@__PURE__*/
-  fileDesc("Chlwcm90by90dnNob3cvdHZzaG93LnByb3RvEgxjb2RleC50dnNob3ciDQoLTGlzdFJlcXVlc3QiNQoMTGlzdFJlc3BvbnNlEiUKB3Jlc3VsdHMYASADKAsyFC5jb2RleC50dnNob3cuVHZTaG93IrwBCgZUdlNob3cSCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRITCgZwb3N0ZXIYAyABKAlIAIgBARIZCgxmaXJzdEFpckRhdGUYBCABKAlIAYgBARIUCgdjb3VudHJ5GAUgASgJSAKIAQESGQoMb3JpZ2luYWxOYW1lGAcgASgJSAOIAQFCCQoHX3Bvc3RlckIPCg1fZmlyc3RBaXJEYXRlQgoKCF9jb3VudHJ5Qg8KDV9vcmlnaW5hbE5hbWUiOgoNU2VhcmNoUmVxdWVzdBINCgVxdWVyeRgBIAEoCRIRCgRwYWdlGAIgASgFSACIAQFCBwoFX3BhZ2UiXwoOU2VhcmNoUmVzcG9uc2USKwoHcmVzdWx0cxgBIAMoCzIaLmNvZGV4LnR2c2hvdy5TZWFyY2hUdlNob3cSDAoEcGFnZRgCIAEoBRISCgp0b3RhbFBhZ2VzGAMgASgFItUBCgxTZWFyY2hUdlNob3cSDgoGdG1kYklkGAEgASgFEgwKBG5hbWUYAiABKAkSEwoGcG9zdGVyGAMgASgJSACIAQESGQoMZmlyc3RBaXJEYXRlGAQgASgJSAGIAQESFAoHY291bnRyeRgFIAEoCUgCiAEBEhkKDG9yaWdpbmFsTmFtZRgHIAEoCUgDiAEBEg0KBWFkZGVkGAggASgIQgkKB19wb3N0ZXJCDwoNX2ZpcnN0QWlyRGF0ZUIKCghfY291bnRyeUIPCg1fb3JpZ2luYWxOYW1lIhwKCkFkZFJlcXVlc3QSDgoGdG1kYklkGAEgASgFIhsKDURlbGV0ZVJlcXVlc3QSCgoCaWQYASABKAkykwIKDVR2U2hvd1NlcnZpY2USPwoETGlzdBIZLmNvZGV4LnR2c2hvdy5MaXN0UmVxdWVzdBoaLmNvZGV4LnR2c2hvdy5MaXN0UmVzcG9uc2UiABJFCgZTZWFyY2gSGy5jb2RleC50dnNob3cuU2VhcmNoUmVxdWVzdBocLmNvZGV4LnR2c2hvdy5TZWFyY2hSZXNwb25zZSIAEjkKA0FkZBIYLmNvZGV4LnR2c2hvdy5BZGRSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IgASPwoGRGVsZXRlEhsuY29kZXgudHZzaG93LkRlbGV0ZVJlcXVlc3QaFi5nb29nbGUucHJvdG9idWYuRW1wdHkiAEKqAQoQY29tLmNvZGV4LnR2c2hvd0ILVHZzaG93UHJvdG9QAVo4Z2l0aHViLmNvbS9jbGVtZW50ZDY0L2NvZGV4L2ludGVybmFsL3R2c2hvdy9wcm90bzt0dnNob3eiAgNDVFiqAgxDb2RleC5UdnNob3fKAgxDb2RleFxUdnNob3fiAhhDb2RleFxUdnNob3dcR1BCTWV0YWRhdGHqAg1Db2RleDo6VHZzaG93YgZwcm90bzM", [file_google_protobuf_empty]);
+  fileDesc("Chlwcm90by90dnNob3cvdHZzaG93LnByb3RvEgxjb2RleC50dnNob3ciGwoLTGlzdFJlcXVlc3QSDAoEcGFnZRgBIAEoBSJXCgxMaXN0UmVzcG9uc2USJQoHcmVzdWx0cxgBIAMoCzIULmNvZGV4LnR2c2hvdy5UdlNob3cSDAoEcGFnZRgCIAEoBRISCgp0b3RhbFBhZ2VzGAMgASgFIrwBCgZUdlNob3cSCgoCaWQYASABKAkSDAoEbmFtZRgCIAEoCRITCgZwb3N0ZXIYAyABKAlIAIgBARIZCgxmaXJzdEFpckRhdGUYBCABKAlIAYgBARIUCgdjb3VudHJ5GAUgASgJSAKIAQESGQoMb3JpZ2luYWxOYW1lGAcgASgJSAOIAQFCCQoHX3Bvc3RlckIPCg1fZmlyc3RBaXJEYXRlQgoKCF9jb3VudHJ5Qg8KDV9vcmlnaW5hbE5hbWUiLAoNU2VhcmNoUmVxdWVzdBINCgVxdWVyeRgBIAEoCRIMCgRwYWdlGAIgASgFIl8KDlNlYXJjaFJlc3BvbnNlEisKB3Jlc3VsdHMYASADKAsyGi5jb2RleC50dnNob3cuU2VhcmNoVHZTaG93EgwKBHBhZ2UYAiABKAUSEgoKdG90YWxQYWdlcxgDIAEoBSLVAQoMU2VhcmNoVHZTaG93Eg4KBnRtZGJJZBgBIAEoBRIMCgRuYW1lGAIgASgJEhMKBnBvc3RlchgDIAEoCUgAiAEBEhkKDGZpcnN0QWlyRGF0ZRgEIAEoCUgBiAEBEhQKB2NvdW50cnkYBSABKAlIAogBARIZCgxvcmlnaW5hbE5hbWUYByABKAlIA4gBARINCgVhZGRlZBgIIAEoCEIJCgdfcG9zdGVyQg8KDV9maXJzdEFpckRhdGVCCgoIX2NvdW50cnlCDwoNX29yaWdpbmFsTmFtZSIcCgpBZGRSZXF1ZXN0Eg4KBnRtZGJJZBgBIAEoBSIbCg1EZWxldGVSZXF1ZXN0EgoKAmlkGAEgASgJMpMCCg1UdlNob3dTZXJ2aWNlEj8KBExpc3QSGS5jb2RleC50dnNob3cuTGlzdFJlcXVlc3QaGi5jb2RleC50dnNob3cuTGlzdFJlc3BvbnNlIgASRQoGU2VhcmNoEhsuY29kZXgudHZzaG93LlNlYXJjaFJlcXVlc3QaHC5jb2RleC50dnNob3cuU2VhcmNoUmVzcG9uc2UiABI5CgNBZGQSGC5jb2RleC50dnNob3cuQWRkUmVxdWVzdBoWLmdvb2dsZS5wcm90b2J1Zi5FbXB0eSIAEj8KBkRlbGV0ZRIbLmNvZGV4LnR2c2hvdy5EZWxldGVSZXF1ZXN0GhYuZ29vZ2xlLnByb3RvYnVmLkVtcHR5IgBCqgEKEGNvbS5jb2RleC50dnNob3dCC1R2c2hvd1Byb3RvUAFaOGdpdGh1Yi5jb20vY2xlbWVudGQ2NC9jb2RleC9pbnRlcm5hbC90dnNob3cvcHJvdG87dHZzaG93ogIDQ1RYqgIMQ29kZXguVHZzaG93ygIMQ29kZXhcVHZzaG934gIYQ29kZXhcVHZzaG93XEdQQk1ldGFkYXRh6gINQ29kZXg6OlR2c2hvd2IGcHJvdG8z", [file_google_protobuf_empty]);
 
 /**
  * @generated from message codex.tvshow.ListRequest
  */
 export type ListRequest = Message<"codex.tvshow.ListRequest"> & {
+  /**
+   * @generated from field: int32 page = 1;
+   */
+  page: number;
 };
 
 /**
@@ -35,6 +39,16 @@ export type ListResponse = Message<"codex.tvshow.ListResponse"> & {
    * @generated from field: repeated codex.tvshow.TvShow results = 1;
    */
   results: TvShow[];
+
+  /**
+   * @generated from field: int32 page = 2;
+   */
+  page: number;
+
+  /**
+   * @generated from field: int32 totalPages = 3;
+   */
+  totalPages: number;
 };
 
 /**
@@ -96,9 +110,9 @@ export type SearchRequest = Message<"codex.tvshow.SearchRequest"> & {
   query: string;
 
   /**
-   * @generated from field: optional int32 page = 2;
+   * @generated from field: int32 page = 2;
    */
-  page?: number | undefined;
+  page: number;
 };
 
 /**
