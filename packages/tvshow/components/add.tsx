@@ -39,7 +39,7 @@ export function Add() {
         class="flex items-end"
         onSubmit={(e) => {
           e.preventDefault();
-          setSearchParams({ q: input });
+          setSearchParams({ q: input, p: undefined });
         }}
       >
         <fieldset class="fieldset py-0">
