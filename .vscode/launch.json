@@ -19,10 +19,7 @@
   "compounds": [
     {
       "name": "dev",
-      "configurations": [
-        "dev: front",
-        "dev: go"
-      ],
+      "configurations": ["dev: front", "dev: go"],
       "stopAll": true
     }
   ]

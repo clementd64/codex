@@ -1,5 +1,5 @@
 import type { ComponentChildren } from "preact";
-import { useRef, useState } from "preact/hooks";
+import { useState } from "preact/hooks";
 
 interface ActionButtonProps {
   onClick: () => Promise<unknown>;
