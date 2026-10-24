@@ -1,0 +1,13 @@
+tmp_dir = "/tmp/air"
+
+[[build.rules]]
+name = "sql"
+include_dir = ["internal"]
+include_ext = ["sql"]
+cmd = "go tool sqlc generate"
+
+[[build.rules]]
+name = "proto"
+include_dir = ["proto"]
+include_ext = ["proto"]
+cmd = "go tool buf generate"
