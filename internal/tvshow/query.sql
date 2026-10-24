@@ -2,7 +2,8 @@
 select show.id, show.name, show.poster, show.firstAirDate::varchar, show.country, show.originalName
 from tvshow.show
 join tvshow.user_show on show.id = user_show.show_id
-where user_show.user_id = @user_id;
+where user_show.user_id = @user_id
+order by show.name;
 
 -- name: AddUserShow :exec
 insert into tvshow.user_show (user_id, show_id) values (@user_id, @show_id);

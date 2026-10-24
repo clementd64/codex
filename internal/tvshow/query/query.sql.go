@@ -93,6 +93,7 @@ select show.id, show.name, show.poster, show.firstAirDate::varchar, show.country
 from tvshow.show
 join tvshow.user_show on show.id = user_show.show_id
 where user_show.user_id = $1
+order by show.name
 `
 
 type ListShowRow struct {
