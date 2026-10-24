@@ -1,3 +1,4 @@
+import { ActionButton } from "design-system/components/actionButton";
 import { useMenuAction } from "design-system/components/menuAction";
 import { Pagination } from "design-system/components/pagination";
 import { goto, Redirect, useLocation } from "design-system/components/router";
@@ -74,10 +75,16 @@ export function Home() {
               ) : null}
 
               <div class="card-actions mt-auto justify-end">
-                <DeleteShowButton
-                  id={show.id}
-                  onSuccess={() => setReloadCount((count) => count + 1)}
-                />
+                <ActionButton
+                  class="btn-error"
+                  onClick={async () => {
+                    await client.delete({ id: show.id });
+                    setReloadCount((count) => count + 1);
+                  }}
+                  errorMessage="Could not delete this show. Please try again."
+                >
+                  <span class="icon-[mdi--trash]"></span>
+                </ActionButton>
               </div>
             </div>
           </div>
@@ -91,43 +98,5 @@ export function Home() {
         onNavigate={(page) => setSearchParams({ p: page })}
       />
     </div>
-  );
-}
-
-function DeleteShowButton({ id, onSuccess }: { id: string; onSuccess: () => void }) {
-  const client = useClient(TvShowService);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function handleAdd() {
-    if (loading) return;
-
-    setLoading(true);
-    setError(null);
-    try {
-      await client.delete({ id });
-      onSuccess();
-    } catch {
-      setError("Could not delete this show. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  return (
-    <>
-      {error ? (
-        <p role="alert" class="text-error text-sm w-full">
-          {error}
-        </p>
-      ) : null}
-      <button type="button" class="btn btn-error" disabled={loading} onClick={handleAdd}>
-        {loading ? (
-          <span class="loading loading-spinner loading-sm" aria-hidden="true"></span>
-        ) : (
-          <span class="icon-[mdi--trash]"></span>
-        )}
-      </button>
-    </>
   );
 }

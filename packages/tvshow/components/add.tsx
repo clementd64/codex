@@ -1,4 +1,5 @@
 import { Code, ConnectError } from "@connectrpc/connect";
+import { ActionButton } from "design-system/components/actionButton";
 import { Pagination } from "design-system/components/pagination";
 import { Redirect, useLocation } from "design-system/components/router";
 import { useClient } from "design-system/lib/client";
@@ -30,6 +31,7 @@ export function Add() {
   );
 
   const [input, setInput] = useState(query ?? "");
+  const [savedIds, setSavedIds] = useState<Set<number>>(() => new Set());
 
   return (
     <div class="grid gap-4">
@@ -83,7 +85,23 @@ export function Add() {
               ) : null}
 
               <div class="card-actions mt-auto justify-end">
-                <AddShowButton tmdbId={show.tmdbId} added={show.added} />
+                <ActionButton
+                  class="btn-primary"
+                  disabled={show.added || savedIds.has(show.tmdbId)}
+                  onClick={async () => {
+                    try {
+                      await client.add({ tmdbId: show.tmdbId });
+                    } catch (cause) {
+                      if (ConnectError.from(cause).code !== Code.AlreadyExists) {
+                        throw cause;
+                      }
+                    }
+                    setSavedIds((ids) => new Set(ids).add(show.tmdbId));
+                  }}
+                  errorMessage="Could not add this show. Please try again."
+                >
+                  {show.added || savedIds.has(show.tmdbId) ? "Added" : "Add"}
+                </ActionButton>
               </div>
             </div>
           </div>
@@ -97,53 +115,5 @@ export function Add() {
         onNavigate={(page) => setSearchParams({ p: page })}
       />
     </div>
-  );
-}
-
-function AddShowButton({ tmdbId, added }: { tmdbId: number; added: boolean }) {
-  const client = useClient(TvShowService);
-  const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const isAdded = added || saved;
-
-  async function handleAdd() {
-    if (saving || isAdded) return;
-
-    setSaving(true);
-    setError(null);
-    try {
-      await client.add({ tmdbId });
-      setSaved(true);
-    } catch (cause) {
-      if (ConnectError.from(cause).code === Code.AlreadyExists) {
-        setSaved(true);
-      } else {
-        setError("Could not add this show. Please try again.");
-      }
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  return (
-    <>
-      {error ? (
-        <p role="alert" class="text-error text-sm w-full">
-          {error}
-        </p>
-      ) : null}
-      <button
-        type="button"
-        class={isAdded ? "btn" : "btn btn-primary"}
-        disabled={saving || isAdded}
-        onClick={handleAdd}
-      >
-        {saving ? (
-          <span class="loading loading-spinner loading-sm" aria-hidden="true"></span>
-        ) : null}
-        {isAdded ? "Added" : saving ? "Adding…" : "Add"}
-      </button>
-    </>
   );
 }
