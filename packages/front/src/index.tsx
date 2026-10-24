@@ -12,6 +12,12 @@ const menu = [
     path: "/tvshow",
     pattern: new URLPattern({ pathname: "/tvshow/*?" }),
   },
+  {
+    name: "User",
+    icon: "icon-[mdi--user]",
+    path: "",
+    bottom: true,
+  },
 ];
 
 const routes = [

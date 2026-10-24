@@ -2,11 +2,12 @@ interface PaginationProps {
   page?: number;
   total?: number;
   onNavigate: (page: number) => void;
+  class?: string;
 }
 
 const BOUNDARY = 2;
 
-export function Pagination({ page = 1, total = 1, onNavigate }: PaginationProps) {
+export function Pagination({ page = 1, total = 1, onNavigate, class: className }: PaginationProps) {
   if (total <= 1) return null;
 
   const count = Math.min(total, BOUNDARY * 2 + 1);
@@ -14,7 +15,7 @@ export function Pagination({ page = 1, total = 1, onNavigate }: PaginationProps)
   const pages = Array.from({ length: count }, (_, index) => start + index);
 
   return (
-    <nav class="join" aria-label="Pagination">
+    <nav class={`join ${className}`} aria-label="Pagination">
       <button
         type="button"
         class="join-item btn"

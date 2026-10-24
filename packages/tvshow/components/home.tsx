@@ -84,13 +84,12 @@ export function Home() {
         ))}
       </div>
 
-      <div class="m-auto">
-        <Pagination
-          page={page}
-          total={data?.totalPages}
-          onNavigate={(page) => setSearchParams({ p: page })}
-        />
-      </div>
+      <Pagination
+        class="m-auto"
+        page={page}
+        total={data?.totalPages}
+        onNavigate={(page) => setSearchParams({ p: page })}
+      />
     </div>
   );
 }

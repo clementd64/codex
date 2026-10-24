@@ -3,10 +3,9 @@ import { useCallback, useContext, useLayoutEffect, useState } from "preact/hooks
 
 export interface MenuAction {
   name: string;
-  icon?: string;
+  icon: string;
   class?: string;
   onClick: () => void;
-  disabled?: boolean;
 }
 
 type RegisterMenuAction = (actions: readonly MenuAction[]) => () => void;
