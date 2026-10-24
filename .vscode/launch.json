@@ -12,14 +12,17 @@
       "name": "dev: go",
       "type": "node-terminal",
       "request": "launch",
-      "command": "go run .",
+      "command": "go tool air",
       "cwd": "${workspaceFolder}"
     }
   ],
   "compounds": [
     {
       "name": "dev",
-      "configurations": ["dev: front", "dev: go"],
+      "configurations": [
+        "dev: front",
+        "dev: go"
+      ],
       "stopAll": true
     }
   ]
