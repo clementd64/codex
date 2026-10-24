@@ -39,8 +39,8 @@ func (s *TvShowServer) List(
 
 	list, err := s.query.ListShow(ctx, tvshowquery.ListShowParams{
 		UserID: userID,
-		Limit:  25,
-		Offset: 25 * (req.GetPage() - 1),
+		Limit:  24,
+		Offset: 24 * (req.GetPage() - 1),
 	})
 	if err != nil {
 		return nil, err
