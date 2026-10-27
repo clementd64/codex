@@ -70,7 +70,7 @@ type ListResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Results       []*TvShow              `protobuf:"bytes,1,rep,name=results,proto3" json:"results,omitempty"`
 	Page          int32                  `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
-	TotalPages    int32                  `protobuf:"varint,3,opt,name=totalPages,proto3" json:"totalPages,omitempty"`
+	TotalPages    int32                  `protobuf:"varint,3,opt,name=total_pages,json=totalPages,proto3" json:"total_pages,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -131,9 +131,9 @@ type TvShow struct {
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Poster        *string                `protobuf:"bytes,3,opt,name=poster,proto3,oneof" json:"poster,omitempty"`
-	FirstAirDate  *string                `protobuf:"bytes,4,opt,name=firstAirDate,proto3,oneof" json:"firstAirDate,omitempty"`
+	FirstAirDate  *string                `protobuf:"bytes,4,opt,name=first_air_date,json=firstAirDate,proto3,oneof" json:"first_air_date,omitempty"`
 	Country       *string                `protobuf:"bytes,5,opt,name=country,proto3,oneof" json:"country,omitempty"`
-	OriginalName  *string                `protobuf:"bytes,7,opt,name=originalName,proto3,oneof" json:"originalName,omitempty"`
+	OriginalName  *string                `protobuf:"bytes,7,opt,name=original_name,json=originalName,proto3,oneof" json:"original_name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -266,7 +266,7 @@ type SearchResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Results       []*SearchTvShow        `protobuf:"bytes,1,rep,name=results,proto3" json:"results,omitempty"`
 	Page          int32                  `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
-	TotalPages    int32                  `protobuf:"varint,3,opt,name=totalPages,proto3" json:"totalPages,omitempty"`
+	TotalPages    int32                  `protobuf:"varint,3,opt,name=total_pages,json=totalPages,proto3" json:"total_pages,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -324,12 +324,12 @@ func (x *SearchResponse) GetTotalPages() int32 {
 
 type SearchTvShow struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	TmdbId        int32                  `protobuf:"varint,1,opt,name=tmdbId,proto3" json:"tmdbId,omitempty"`
+	TmdbId        int32                  `protobuf:"varint,1,opt,name=tmdb_id,json=tmdbId,proto3" json:"tmdb_id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Poster        *string                `protobuf:"bytes,3,opt,name=poster,proto3,oneof" json:"poster,omitempty"`
-	FirstAirDate  *string                `protobuf:"bytes,4,opt,name=firstAirDate,proto3,oneof" json:"firstAirDate,omitempty"`
+	FirstAirDate  *string                `protobuf:"bytes,4,opt,name=first_air_date,json=firstAirDate,proto3,oneof" json:"first_air_date,omitempty"`
 	Country       *string                `protobuf:"bytes,5,opt,name=country,proto3,oneof" json:"country,omitempty"`
-	OriginalName  *string                `protobuf:"bytes,7,opt,name=originalName,proto3,oneof" json:"originalName,omitempty"`
+	OriginalName  *string                `protobuf:"bytes,7,opt,name=original_name,json=originalName,proto3,oneof" json:"original_name,omitempty"`
 	Added         bool                   `protobuf:"varint,8,opt,name=added,proto3" json:"added,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -416,7 +416,7 @@ func (x *SearchTvShow) GetAdded() bool {
 
 type AddRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	TmdbId        int32                  `protobuf:"varint,1,opt,name=tmdbId,proto3" json:"tmdbId,omitempty"`
+	TmdbId        int32                  `protobuf:"varint,1,opt,name=tmdb_id,json=tmdbId,proto3" json:"tmdb_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -508,50 +508,48 @@ const file_proto_tvshow_tvshow_proto_rawDesc = "" +
 	"\n" +
 	"\x19proto/tvshow/tvshow.proto\x12\fcodex.tvshow\x1a\x1bgoogle/protobuf/empty.proto\"!\n" +
 	"\vListRequest\x12\x12\n" +
-	"\x04page\x18\x01 \x01(\x05R\x04page\"r\n" +
+	"\x04page\x18\x01 \x01(\x05R\x04page\"s\n" +
 	"\fListResponse\x12.\n" +
 	"\aresults\x18\x01 \x03(\v2\x14.codex.tvshow.TvShowR\aresults\x12\x12\n" +
-	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x1e\n" +
-	"\n" +
-	"totalPages\x18\x03 \x01(\x05R\n" +
-	"totalPages\"\xf3\x01\n" +
+	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x1f\n" +
+	"\vtotal_pages\x18\x03 \x01(\x05R\n" +
+	"totalPages\"\xf9\x01\n" +
 	"\x06TvShow\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1b\n" +
-	"\x06poster\x18\x03 \x01(\tH\x00R\x06poster\x88\x01\x01\x12'\n" +
-	"\ffirstAirDate\x18\x04 \x01(\tH\x01R\ffirstAirDate\x88\x01\x01\x12\x1d\n" +
-	"\acountry\x18\x05 \x01(\tH\x02R\acountry\x88\x01\x01\x12'\n" +
-	"\foriginalName\x18\a \x01(\tH\x03R\foriginalName\x88\x01\x01B\t\n" +
-	"\a_posterB\x0f\n" +
-	"\r_firstAirDateB\n" +
+	"\x06poster\x18\x03 \x01(\tH\x00R\x06poster\x88\x01\x01\x12)\n" +
+	"\x0efirst_air_date\x18\x04 \x01(\tH\x01R\ffirstAirDate\x88\x01\x01\x12\x1d\n" +
+	"\acountry\x18\x05 \x01(\tH\x02R\acountry\x88\x01\x01\x12(\n" +
+	"\roriginal_name\x18\a \x01(\tH\x03R\foriginalName\x88\x01\x01B\t\n" +
+	"\a_posterB\x11\n" +
+	"\x0f_first_air_dateB\n" +
 	"\n" +
-	"\b_countryB\x0f\n" +
-	"\r_originalName\"9\n" +
+	"\b_countryB\x10\n" +
+	"\x0e_original_name\"9\n" +
 	"\rSearchRequest\x12\x14\n" +
 	"\x05query\x18\x01 \x01(\tR\x05query\x12\x12\n" +
-	"\x04page\x18\x02 \x01(\x05R\x04page\"z\n" +
+	"\x04page\x18\x02 \x01(\x05R\x04page\"{\n" +
 	"\x0eSearchResponse\x124\n" +
 	"\aresults\x18\x01 \x03(\v2\x1a.codex.tvshow.SearchTvShowR\aresults\x12\x12\n" +
-	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x1e\n" +
-	"\n" +
-	"totalPages\x18\x03 \x01(\x05R\n" +
-	"totalPages\"\x97\x02\n" +
-	"\fSearchTvShow\x12\x16\n" +
-	"\x06tmdbId\x18\x01 \x01(\x05R\x06tmdbId\x12\x12\n" +
+	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x1f\n" +
+	"\vtotal_pages\x18\x03 \x01(\x05R\n" +
+	"totalPages\"\x9e\x02\n" +
+	"\fSearchTvShow\x12\x17\n" +
+	"\atmdb_id\x18\x01 \x01(\x05R\x06tmdbId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1b\n" +
-	"\x06poster\x18\x03 \x01(\tH\x00R\x06poster\x88\x01\x01\x12'\n" +
-	"\ffirstAirDate\x18\x04 \x01(\tH\x01R\ffirstAirDate\x88\x01\x01\x12\x1d\n" +
-	"\acountry\x18\x05 \x01(\tH\x02R\acountry\x88\x01\x01\x12'\n" +
-	"\foriginalName\x18\a \x01(\tH\x03R\foriginalName\x88\x01\x01\x12\x14\n" +
+	"\x06poster\x18\x03 \x01(\tH\x00R\x06poster\x88\x01\x01\x12)\n" +
+	"\x0efirst_air_date\x18\x04 \x01(\tH\x01R\ffirstAirDate\x88\x01\x01\x12\x1d\n" +
+	"\acountry\x18\x05 \x01(\tH\x02R\acountry\x88\x01\x01\x12(\n" +
+	"\roriginal_name\x18\a \x01(\tH\x03R\foriginalName\x88\x01\x01\x12\x14\n" +
 	"\x05added\x18\b \x01(\bR\x05addedB\t\n" +
-	"\a_posterB\x0f\n" +
-	"\r_firstAirDateB\n" +
+	"\a_posterB\x11\n" +
+	"\x0f_first_air_dateB\n" +
 	"\n" +
-	"\b_countryB\x0f\n" +
-	"\r_originalName\"$\n" +
+	"\b_countryB\x10\n" +
+	"\x0e_original_name\"%\n" +
 	"\n" +
-	"AddRequest\x12\x16\n" +
-	"\x06tmdbId\x18\x01 \x01(\x05R\x06tmdbId\"\x1f\n" +
+	"AddRequest\x12\x17\n" +
+	"\atmdb_id\x18\x01 \x01(\x05R\x06tmdbId\"\x1f\n" +
 	"\rDeleteRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id2\x93\x02\n" +
 	"\rTvShowService\x12?\n" +
