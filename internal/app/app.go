@@ -11,6 +11,8 @@ import (
 )
 
 type App struct {
+	IGDBClientId          string
+	IGDBClientSecret      string
 	ListenAddr            string
 	OIDCClientID          string
 	OIDCDiscoveryEndpoint string
@@ -21,13 +23,17 @@ type App struct {
 }
 
 func New() (*App, error) {
-	tmdbApikey := os.Getenv("TMDB_APIKEY")
-	if filename := os.Getenv("TMDB_APIKEY_FILE"); filename != "" {
-		value, err := os.ReadFile(filename)
-		if err != nil {
-			return nil, fmt.Errorf("read TMDB_APIKEY_FILE: %w", err)
-		}
-		tmdbApikey = strings.TrimSpace(string(value))
+	igdbClientId, err := envFile("IGDB_CLIENT_ID")
+	if err != nil {
+		return nil, err
+	}
+	igdbClientSecret, err := envFile("IGDB_CLIENT_SECRET")
+	if err != nil {
+		return nil, err
+	}
+	tmdbApikey, err := envFile("TMDB_APIKEY")
+	if err != nil {
+		return nil, err
 	}
 
 	signingKey := make([]byte, 32)
@@ -39,6 +45,8 @@ func New() (*App, error) {
 	}
 
 	app := App{
+		IGDBClientId:          igdbClientId,
+		IGDBClientSecret:      igdbClientSecret,
 		ListenAddr:            os.Getenv("LISTEN_ADDR"),
 		OIDCClientID:          os.Getenv("OIDC_CLIENT_ID"),
 		OIDCDiscoveryEndpoint: os.Getenv("OIDC_DISCOVERY_ENDPOINT"),
@@ -53,4 +61,16 @@ func New() (*App, error) {
 	}
 
 	return &app, nil
+}
+
+func envFile(key string) (string, error) {
+	value := os.Getenv(key)
+	if filename := os.Getenv(key + "_FILE"); filename != "" {
+		file, err := os.ReadFile(filename)
+		if err != nil {
+			return "", fmt.Errorf("read %s_FILE: %w", key, err)
+		}
+		value = strings.TrimSpace(string(file))
+	}
+	return value, nil
 }

@@ -12,7 +12,7 @@
       "name": "dev: go",
       "type": "node-terminal",
       "request": "launch",
-      "command": "go tool air",
+      "command": "go tool air server",
       "cwd": "${workspaceFolder}"
     }
   ],

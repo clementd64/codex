@@ -18,6 +18,49 @@ type AuthUser struct {
 	LastLoggedAt time.Time
 }
 
+type IgdbCompany struct {
+	ID       int64
+	Name     string
+	Country  sql.NullInt32
+	SyncedAt time.Time
+}
+
+type IgdbFranchise struct {
+	ID       int64
+	Name     string
+	SyncedAt time.Time
+}
+
+type IgdbGame struct {
+	ID               int64
+	Name             string
+	FirstReleaseDate sql.NullTime
+	CoverImageID     sql.NullString
+	PlatformIds      []int64
+	MainFranchiseID  sql.NullInt64
+	FranchiseIds     []int64
+	GameType         string
+	ParentGameID     sql.NullInt64
+	VersionParentID  sql.NullInt64
+	RelatedGameIds   []int64
+	DeveloperIds     []int64
+	PublisherIds     []int64
+	SyncedAt         time.Time
+}
+
+type IgdbGameGroup struct {
+	GameID     int64
+	MainGameID int64
+}
+
+type IgdbPlatform struct {
+	ID           int64
+	Name         string
+	Abbreviation string
+	LogoImageID  sql.NullString
+	SyncedAt     time.Time
+}
+
 type TvshowShow struct {
 	ID           uuid.UUID
 	TmdbID       int32

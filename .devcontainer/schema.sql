@@ -28,3 +28,43 @@ create table tvshow.user_show (
     created_at timestamptz not null default now(),
     primary key (user_id, show_id)
 );
+
+create schema igdb;
+
+create table igdb.platform (
+    id bigint primary key,
+    name varchar not null,
+    abbreviation varchar not null,
+    logo_image_id varchar,
+    synced_at timestamptz not null default now()
+);
+
+create table igdb.franchise (
+    id bigint primary key,
+    name varchar not null,
+    synced_at timestamptz not null default now()
+);
+
+create table igdb.company (
+    id bigint primary key,
+    name varchar not null,
+    country integer,
+    synced_at timestamptz not null default now()
+);
+
+create table igdb.game (
+    id bigint primary key,
+    name varchar not null,
+    first_release_date timestamptz,
+    cover_image_id varchar,
+    platform_ids bigint[] not null,
+    main_franchise_id bigint,
+    franchise_ids bigint[] not null,
+    game_type varchar not null,
+    parent_game_id bigint,
+    version_parent_id bigint,
+    related_game_ids bigint[] not null,
+    developer_ids bigint[] not null,
+    publisher_ids bigint[] not null,
+    synced_at timestamptz not null default now()
+);
