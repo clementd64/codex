@@ -41,5 +41,6 @@ func Run(ctx context.Context, args []string) error {
 
 func usage() {
 	fmt.Fprintln(os.Stderr, `Usage:
-  codex server`)
+  codex server
+  codex fetch-igdb`)
 }
