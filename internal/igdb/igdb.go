@@ -83,6 +83,7 @@ func (c *Client) FetchCompanies(ctx context.Context, queries *igdbquery.Queries)
 
 type gameRow struct {
 	Record
+	Name             string  `json:"name"`
 	FirstReleaseDate int64   `json:"first_release_date"`
 	CoverImageID     string  `json:"cover_image_id"`
 	PlatformIDs      []int64 `json:"platform_ids"`
@@ -105,7 +106,7 @@ func (c *Client) FetchGames(ctx context.Context, queries *igdbquery.Queries) (in
 				continue
 			}
 			row := gameRow{
-				Record: game.Record, FirstReleaseDate: game.FirstReleaseDate,
+				Record: game.Record, Name: game.Name, FirstReleaseDate: game.FirstReleaseDate,
 				PlatformIDs: game.Platforms, MainFranchiseID: game.Franchise, FranchiseIDs: game.Franchises,
 				GameType: game.Type.Type, ParentGameID: game.ParentGame, VersionParentID: game.VersionParent,
 			}

@@ -89,7 +89,7 @@ func (c *Client) FetchAll[T Model](ctx context.Context, endpoint, fields, filter
 	stored := 0
 	var lastID int64
 	for {
-		where := fmt.Sprintf("id > %d", lastID)
+		where := fmt.Sprintf("id > %d & name != null & name != \"\"", lastID)
 		if filter != "" {
 			where += " & " + filter
 		}
