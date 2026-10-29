@@ -20,6 +20,13 @@ sql:
         package: "authquery"
         out: "internal/auth/query"
   - engine: "postgresql"
+    queries: "internal/game/query.sql"
+    schema: ".devcontainer/schema.sql"
+    gen:
+      go:
+        package: "gamequery"
+        out: "internal/game/query"
+  - engine: "postgresql"
     queries: "internal/igdb/query.sql"
     schema: ".devcontainer/schema.sql"
     gen:

@@ -51,4 +51,5 @@ export function createUnauthenticatedClient<T extends DescService>(service: T): 
 }
 
 export { AuthService } from "./proto/auth/auth_pb";
+export { GameService } from "./proto/game/game_pb";
 export { TvShowService } from "./proto/tvshow/tvshow_pb";

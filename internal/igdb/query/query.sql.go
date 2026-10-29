@@ -15,7 +15,9 @@ import (
 const upsertCompanies = `-- name: UpsertCompanies :exec
 insert into igdb.company (id, name, country)
 select id, name, nullif(country, 0)
-from unnest($1::bigint[], $2::text[], $3::int[]) as batch(id, name, country)
+from rows from (
+    unnest($1::bigint[]), unnest($2::text[]), unnest($3::int[])
+) as batch(id, name, country)
 on conflict (id) do update set
     name = excluded.name,
     country = excluded.country,
@@ -36,7 +38,7 @@ func (q *Queries) UpsertCompanies(ctx context.Context, arg UpsertCompaniesParams
 const upsertFranchises = `-- name: UpsertFranchises :exec
 insert into igdb.franchise (id, name)
 select id, name
-from unnest($1::bigint[], $2::text[]) as batch(id, name)
+from rows from (unnest($1::bigint[]), unnest($2::text[])) as batch(id, name)
 on conflict (id) do update set
     name = excluded.name,
     synced_at = now()
@@ -98,11 +100,11 @@ func (q *Queries) UpsertGames(ctx context.Context, games json.RawMessage) error 
 const upsertPlatforms = `-- name: UpsertPlatforms :exec
 insert into igdb.platform (id, name, abbreviation, logo_image_id)
 select id, name, abbreviation, nullif(logo_image_id, '')
-from unnest(
-    $1::bigint[],
-    $2::text[],
-    $3::text[],
-    $4::text[]
+from rows from (
+    unnest($1::bigint[]),
+    unnest($2::text[]),
+    unnest($3::text[]),
+    unnest($4::text[])
 ) as batch(id, name, abbreviation, logo_image_id)
 on conflict (id) do update set
     name = excluded.name,

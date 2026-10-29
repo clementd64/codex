@@ -1,11 +1,11 @@
 -- name: UpsertPlatforms :exec
 insert into igdb.platform (id, name, abbreviation, logo_image_id)
 select id, name, abbreviation, nullif(logo_image_id, '')
-from unnest(
-    @ids::bigint[],
-    @names::text[],
-    @abbreviations::text[],
-    @logo_image_ids::text[]
+from rows from (
+    unnest(@ids::bigint[]),
+    unnest(@names::text[]),
+    unnest(@abbreviations::text[]),
+    unnest(@logo_image_ids::text[])
 ) as batch(id, name, abbreviation, logo_image_id)
 on conflict (id) do update set
     name = excluded.name,
@@ -16,7 +16,9 @@ on conflict (id) do update set
 -- name: UpsertCompanies :exec
 insert into igdb.company (id, name, country)
 select id, name, nullif(country, 0)
-from unnest(@ids::bigint[], @names::text[], @countries::int[]) as batch(id, name, country)
+from rows from (
+    unnest(@ids::bigint[]), unnest(@names::text[]), unnest(@countries::int[])
+) as batch(id, name, country)
 on conflict (id) do update set
     name = excluded.name,
     country = excluded.country,
@@ -25,7 +27,7 @@ on conflict (id) do update set
 -- name: UpsertFranchises :exec
 insert into igdb.franchise (id, name)
 select id, name
-from unnest(@ids::bigint[], @names::text[]) as batch(id, name)
+from rows from (unnest(@ids::bigint[]), unnest(@names::text[])) as batch(id, name)
 on conflict (id) do update set
     name = excluded.name,
     synced_at = now();

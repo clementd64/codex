@@ -1,0 +1,27 @@
+syntax = "proto3";
+package codex.game;
+option go_package = "github.com/clementd64/codex/internal/game/proto;game";
+
+import "google/protobuf/empty.proto";
+
+service GameService {
+  rpc Search(SearchRequest) returns (SearchResponse) {}
+}
+
+message SearchRequest {
+  string query = 1;
+  int32 page = 2;
+}
+
+message SearchResponse {
+  repeated SearchGame results = 1;
+  int32 page = 2;
+  int32 total_pages = 3;
+}
+
+message SearchGame {
+  int32 id = 1;
+  string name = 2;
+  optional string cover = 3;
+  bool added = 8;
+}

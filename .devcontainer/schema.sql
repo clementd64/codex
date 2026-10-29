@@ -1,4 +1,5 @@
-drop schema if exists public;
+create schema if not exists public;
+create extension if not exists pg_trgm with schema public;
 
 create schema auth;
 
@@ -69,13 +70,27 @@ create table igdb.game (
     developer_ids bigint[] not null,
     publisher_ids bigint[] not null,
     localizations jsonb not null,
-    name_vector tsvector generated always as (
-        to_tsvector(
-            'simple',
-            json_array(name returning jsonb) || jsonb_path_query_array(localizations, '$.*.name')
-        )
+    search_names text generated always as (
+        (json_array(name returning jsonb) || jsonb_path_query_array(localizations, '$.*.name'))::text
     ) stored,
     synced_at timestamptz not null default now()
 );
 
-create index game_name_vector_idx on igdb.game using gin (name_vector);
+create index game_search_names_trgm_idx on igdb.game using gin (search_names gin_trgm_ops);
+
+create view igdb.main_game as
+select * from igdb.game
+where type not in (
+    'Bundle',
+    'DLC',
+    'Expansion',
+    'Pack / Addon',
+    'Season',
+    'Standalone Expansion',
+    'Update'
+) and (status is null or status not in (
+    'Rumored',
+    'Cancelled',
+    'Delisted',
+    'Offline'
+));

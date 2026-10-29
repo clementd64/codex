@@ -49,7 +49,28 @@ type IgdbGame struct {
 	DeveloperIds     []int64
 	PublisherIds     []int64
 	Localizations    json.RawMessage
-	NameVector       interface{}
+	SearchNames      sql.NullString
+	SyncedAt         time.Time
+}
+
+type IgdbMainGame struct {
+	ID               int64
+	Name             string
+	Summary          sql.NullString
+	FirstReleaseDate sql.NullTime
+	CoverImageID     sql.NullString
+	PlatformIds      []int64
+	MainFranchiseID  sql.NullInt64
+	FranchiseIds     []int64
+	Type             string
+	Status           sql.NullString
+	ParentGameID     sql.NullInt64
+	VersionParentID  sql.NullInt64
+	RelatedGameIds   []int64
+	DeveloperIds     []int64
+	PublisherIds     []int64
+	Localizations    json.RawMessage
+	SearchNames      sql.NullString
 	SyncedAt         time.Time
 }
 

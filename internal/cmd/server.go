@@ -14,12 +14,14 @@ import (
 	"connectrpc.com/connect/v2/connecthttp"
 	"github.com/clementd64/codex/internal/app"
 	"github.com/clementd64/codex/internal/auth"
+	"github.com/clementd64/codex/internal/game"
 	"github.com/clementd64/codex/internal/tvshow"
 )
 
 func server(ctx context.Context, app *app.App) error {
 	server := connect.NewServer(auth.Middleware(app.SigningKey))
 	auth.Register(server, app)
+	game.Register(server, app)
 	tvshow.Register(server, app)
 
 	api := http.NewServeMux()

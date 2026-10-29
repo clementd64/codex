@@ -3,7 +3,8 @@ import { Router } from "design-system/components/router";
 import { AuthProvider } from "design-system/components/authprovider";
 import { Home } from "./components/home";
 import { LayoutMixin } from "./components/layout";
-import { TvShow } from "../../tvshow";
+import { TvShow } from "tvshow";
+import { Game } from "game";
 
 const menu = [
   {
@@ -11,6 +12,12 @@ const menu = [
     icon: "icon-[mdi--remote-tv]",
     path: "/tvshow",
     pattern: new URLPattern({ pathname: "/tvshow/*?" }),
+  },
+  {
+    name: "Game",
+    icon: "icon-[mdi--gamepad]",
+    path: "/game",
+    pattern: new URLPattern({ pathname: "/game/*?" }),
   },
   {
     name: "User",
@@ -24,6 +31,10 @@ const routes = [
   {
     pattern: new URLPattern({ pathname: "/tvshow/*?" }),
     component: LayoutMixin(TvShow, menu),
+  },
+  {
+    pattern: new URLPattern({ pathname: "/game/*?" }),
+    component: LayoutMixin(Game, menu),
   },
   {
     pattern: new URLPattern({ pathname: "/" }),
