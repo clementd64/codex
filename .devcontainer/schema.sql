@@ -69,5 +69,13 @@ create table igdb.game (
     developer_ids bigint[] not null,
     publisher_ids bigint[] not null,
     localizations jsonb not null,
+    name_vector tsvector generated always as (
+        to_tsvector(
+            'simple',
+            json_array(name returning jsonb) || jsonb_path_query_array(localizations, '$.*.name')
+        )
+    ) stored,
     synced_at timestamptz not null default now()
 );
+
+create index game_name_vector_idx on igdb.game using gin (name_vector);

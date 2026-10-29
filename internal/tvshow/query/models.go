@@ -49,6 +49,7 @@ type IgdbGame struct {
 	DeveloperIds     []int64
 	PublisherIds     []int64
 	Localizations    json.RawMessage
+	NameVector       interface{}
 	SyncedAt         time.Time
 }
 
