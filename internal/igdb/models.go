@@ -66,6 +66,7 @@ type Game struct {
 	Franchise            int64             `json:"franchise"`
 	Franchises           []int64           `json:"franchises"`
 	Type                 *GameType         `json:"game_type"`
+	Status               *GameStatus       `json:"game_status"`
 	ParentGame           int64             `json:"parent_game"`
 	VersionParent        int64             `json:"version_parent"`
 	DLCs                 []int64           `json:"dlcs"`
@@ -76,6 +77,10 @@ type Game struct {
 	Ports                []int64           `json:"ports"`
 	ExpandedGames        []int64           `json:"expanded_games"`
 	InvolvedCompanies    []InvolvedCompany `json:"involved_companies"`
+}
+
+type GameStatus struct {
+	Status string `json:"status"`
 }
 
 type GameType struct {

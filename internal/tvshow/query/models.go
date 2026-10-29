@@ -41,7 +41,8 @@ type IgdbGame struct {
 	PlatformIds      []int64
 	MainFranchiseID  sql.NullInt64
 	FranchiseIds     []int64
-	GameType         string
+	Type             string
+	Status           sql.NullString
 	ParentGameID     sql.NullInt64
 	VersionParentID  sql.NullInt64
 	RelatedGameIds   []int64

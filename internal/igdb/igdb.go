@@ -90,7 +90,8 @@ type gameRow struct {
 	PlatformIDs      []int64                        `json:"platform_ids"`
 	MainFranchiseID  int64                          `json:"main_franchise_id"`
 	FranchiseIDs     []int64                        `json:"franchise_ids"`
-	GameType         string                         `json:"game_type"`
+	Status           string                         `json:"status"`
+	Type             string                         `json:"type"`
 	ParentGameID     int64                          `json:"parent_game_id"`
 	VersionParentID  int64                          `json:"version_parent_id"`
 	RelatedGameIDs   []int64                        `json:"related_game_ids"`
@@ -106,7 +107,7 @@ type gameLocalizationRow struct {
 }
 
 func (c *Client) FetchGames(ctx context.Context, queries *igdbquery.Queries) (int, error) {
-	const fields = "name,summary,first_release_date,cover.image_id,game_localizations.name,game_localizations.region.identifier,game_localizations.cover.image_id,keywords.name,platforms,franchise,franchises,game_type.type,parent_game,version_parent,dlcs,expansions,standalone_expansions,remakes,remasters,ports,expanded_games,involved_companies.company,involved_companies.developer,involved_companies.publisher"
+	const fields = "name,summary,first_release_date,cover.image_id,game_localizations.name,game_localizations.region.identifier,game_localizations.cover.image_id,keywords.name,platforms,franchise,franchises,game_type.type,game_status.status,parent_game,version_parent,dlcs,expansions,standalone_expansions,remakes,remasters,ports,expanded_games,involved_companies.company,involved_companies.developer,involved_companies.publisher"
 	return c.FetchAll(ctx, "games", fields, "game_type = (0,1,2,3,4,6,7,8,9,10,11,13,14)", func(page []Game) (int, error) {
 		rows := make([]gameRow, 0, len(page))
 		for _, game := range page {
@@ -119,7 +120,10 @@ func (c *Client) FetchGames(ctx context.Context, queries *igdbquery.Queries) (in
 				Record: game.Record, Name: game.Name, Summary: game.Summary, FirstReleaseDate: game.FirstReleaseDate,
 				Localizations: make(map[string]gameLocalizationRow),
 				PlatformIDs:   game.Platforms, MainFranchiseID: game.Franchise, FranchiseIDs: game.Franchises,
-				GameType: game.Type.Type, ParentGameID: game.ParentGame, VersionParentID: game.VersionParent,
+				Type: game.Type.Type, ParentGameID: game.ParentGame, VersionParentID: game.VersionParent,
+			}
+			if game.Status != nil {
+				row.Status = game.Status.Status
 			}
 			for _, localization := range game.Localizations {
 				if localization.Region == nil || localization.Region.Identifier == "" || localization.Cover == nil || localization.Cover.ImageID == "" {
