@@ -83,32 +83,52 @@ func (c *Client) FetchCompanies(ctx context.Context, queries *igdbquery.Queries)
 
 type gameRow struct {
 	Record
-	Name             string  `json:"name"`
-	FirstReleaseDate int64   `json:"first_release_date"`
-	CoverImageID     string  `json:"cover_image_id"`
-	PlatformIDs      []int64 `json:"platform_ids"`
-	MainFranchiseID  int64   `json:"main_franchise_id"`
-	FranchiseIDs     []int64 `json:"franchise_ids"`
-	GameType         string  `json:"game_type"`
-	ParentGameID     int64   `json:"parent_game_id"`
-	VersionParentID  int64   `json:"version_parent_id"`
-	RelatedGameIDs   []int64 `json:"related_game_ids"`
-	DeveloperIDs     []int64 `json:"developer_ids"`
-	PublisherIDs     []int64 `json:"publisher_ids"`
+	Summary          string                         `json:"summary"`
+	Name             string                         `json:"name"`
+	FirstReleaseDate int64                          `json:"first_release_date"`
+	CoverImageID     string                         `json:"cover_image_id"`
+	PlatformIDs      []int64                        `json:"platform_ids"`
+	MainFranchiseID  int64                          `json:"main_franchise_id"`
+	FranchiseIDs     []int64                        `json:"franchise_ids"`
+	GameType         string                         `json:"game_type"`
+	ParentGameID     int64                          `json:"parent_game_id"`
+	VersionParentID  int64                          `json:"version_parent_id"`
+	RelatedGameIDs   []int64                        `json:"related_game_ids"`
+	DeveloperIDs     []int64                        `json:"developer_ids"`
+	PublisherIDs     []int64                        `json:"publisher_ids"`
+	Localizations    map[string]gameLocalizationRow `json:"localizations"`
+}
+
+type gameLocalizationRow struct {
+	Record
+	Name         string `json:"name"`
+	CoverImageID string `json:"cover_image_id"`
 }
 
 func (c *Client) FetchGames(ctx context.Context, queries *igdbquery.Queries) (int, error) {
-	const fields = "name,first_release_date,cover.image_id,platforms,franchise,franchises,game_type.type,parent_game,version_parent,dlcs,expansions,standalone_expansions,remakes,remasters,ports,expanded_games,involved_companies.company,involved_companies.developer,involved_companies.publisher"
+	const fields = "name,summary,first_release_date,cover.image_id,game_localizations.name,game_localizations.region.identifier,game_localizations.cover.image_id,keywords.name,platforms,franchise,franchises,game_type.type,parent_game,version_parent,dlcs,expansions,standalone_expansions,remakes,remasters,ports,expanded_games,involved_companies.company,involved_companies.developer,involved_companies.publisher"
 	return c.FetchAll(ctx, "games", fields, "game_type = (0,1,2,3,4,6,7,8,9,10,11,13,14)", func(page []Game) (int, error) {
 		rows := make([]gameRow, 0, len(page))
 		for _, game := range page {
-			if game.Type == nil || !officialGameType(game.Type.ID) {
+			if game.Type == nil || !officialGameType(game.Type.ID) || slices.ContainsFunc(game.Keywords, func(keyword Keyword) bool {
+				return strings.Contains(strings.ToLower(keyword.Name), "unofficial")
+			}) {
 				continue
 			}
 			row := gameRow{
-				Record: game.Record, Name: game.Name, FirstReleaseDate: game.FirstReleaseDate,
-				PlatformIDs: game.Platforms, MainFranchiseID: game.Franchise, FranchiseIDs: game.Franchises,
+				Record: game.Record, Name: game.Name, Summary: game.Summary, FirstReleaseDate: game.FirstReleaseDate,
+				Localizations: make(map[string]gameLocalizationRow),
+				PlatformIDs:   game.Platforms, MainFranchiseID: game.Franchise, FranchiseIDs: game.Franchises,
 				GameType: game.Type.Type, ParentGameID: game.ParentGame, VersionParentID: game.VersionParent,
+			}
+			for _, localization := range game.Localizations {
+				if localization.Region == nil || localization.Region.Identifier == "" || localization.Cover == nil || localization.Cover.ImageID == "" {
+					continue
+				}
+				row.Localizations[localization.Region.Identifier] = gameLocalizationRow{
+					Record: localization.Record, Name: localization.Name,
+					CoverImageID: localization.Cover.ImageID,
+				}
 			}
 			for _, ids := range [][]int64{game.DLCs, game.Expansions, game.StandaloneExpansions, game.Remakes, game.Remasters, game.Ports, game.ExpandedGames} {
 				row.RelatedGameIDs = appendUniqueIDs(row.RelatedGameIDs, ids...)

@@ -56,9 +56,12 @@ func (c *Client) Franchises(ctx context.Context, query string) ([]Franchise, err
 
 type Game struct {
 	Record
+	Summary              string            `json:"summary"`
 	Name                 string            `json:"name"`
 	FirstReleaseDate     int64             `json:"first_release_date"`
 	Cover                *GameCover        `json:"cover,omitempty"`
+	Localizations        []GameLocalization `json:"game_localizations"`
+	Keywords             []Keyword         `json:"keywords"`
 	Platforms            []int64           `json:"platforms"`
 	Franchise            int64             `json:"franchise"`
 	Franchises           []int64           `json:"franchises"`
@@ -88,6 +91,22 @@ type InvolvedCompany struct {
 
 type GameCover struct {
 	ImageID string `json:"image_id"`
+}
+
+type GameLocalization struct {
+	Record
+	Name   string     `json:"name"`
+	Region *Region    `json:"region"`
+	Cover  *GameCover `json:"cover"`
+}
+
+type Region struct {
+	Identifier string `json:"identifier"`
+}
+
+type Keyword struct {
+	Record
+	Name string `json:"name"`
 }
 
 func (c *Client) Games(ctx context.Context, query string) ([]Game, error) {

@@ -6,6 +6,7 @@ package igdbquery
 
 import (
 	"database/sql"
+	"encoding/json"
 	"time"
 
 	"uuid"
@@ -34,6 +35,7 @@ type IgdbFranchise struct {
 type IgdbGame struct {
 	ID               int64
 	Name             string
+	Summary          sql.NullString
 	FirstReleaseDate sql.NullTime
 	CoverImageID     sql.NullString
 	PlatformIds      []int64
@@ -45,12 +47,8 @@ type IgdbGame struct {
 	RelatedGameIds   []int64
 	DeveloperIds     []int64
 	PublisherIds     []int64
+	Localizations    json.RawMessage
 	SyncedAt         time.Time
-}
-
-type IgdbGameGroup struct {
-	GameID     int64
-	MainGameID int64
 }
 
 type IgdbPlatform struct {

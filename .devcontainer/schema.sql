@@ -55,6 +55,7 @@ create table igdb.company (
 create table igdb.game (
     id bigint primary key,
     name varchar not null,
+    summary text,
     first_release_date timestamptz,
     cover_image_id varchar,
     platform_ids bigint[] not null,
@@ -66,5 +67,6 @@ create table igdb.game (
     related_game_ids bigint[] not null,
     developer_ids bigint[] not null,
     publisher_ids bigint[] not null,
+    localizations jsonb not null,
     synced_at timestamptz not null default now()
 );
