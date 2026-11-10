@@ -8,32 +8,51 @@ package gamequery
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 )
 
 const searchGame = `-- name: SearchGame :many
-select id, name, cover_image_id,
-    ceil(count(*) over ()::numeric / $1)::bigint as total_pages
-from igdb.main_game
-where $2::text <% search_names
-order by word_similarity($2::text, search_names) desc, name, id
-limit $1 offset $3
+with games as (
+    select game.id, game.name,
+        coalesce(nullif(game.localizations->'EU'->>'cover_image_id', ''), game.cover_image_id, '')::text as cover_image_id,
+        game.publisher_ids, game.developer_ids, game.platform_ids, game.first_release_date,
+        word_similarity($1::text, game.search_names) as similarity,
+        ceil(count(*) over ()::numeric / $2)::bigint as total_pages
+    from igdb.main_game as game
+    where $1::text <% game.search_names
+    order by similarity desc, game.name, game.id
+    limit $2 offset $3
+)
+select game.id, game.name, game.cover_image_id, game.first_release_date,
+    coalesce(
+        jsonb_agg(jsonb_build_object('id', platform.id, 'name', platform.name) order by platform.name, platform.id)
+            filter (where platform.id is not null),
+        '[]'::jsonb
+    )::jsonb as platforms,
+    game.total_pages
+from games as game
+left join igdb.platform as platform on platform.id = any(game.platform_ids)
+group by game.id, game.name, game.cover_image_id, game.first_release_date, game.similarity, game.total_pages
+order by game.similarity desc, game.name, game.id
 `
 
 type SearchGameParams struct {
-	Limit  int32
 	Query  string
+	Limit  int32
 	Offset int32
 }
 
 type SearchGameRow struct {
-	ID           int64
-	Name         string
-	CoverImageID sql.NullString
-	TotalPages   int64
+	ID               int64
+	Name             string
+	CoverImageID     string
+	FirstReleaseDate sql.NullTime
+	Platforms        json.RawMessage
+	TotalPages       int64
 }
 
 func (q *Queries) SearchGame(ctx context.Context, arg SearchGameParams) ([]SearchGameRow, error) {
-	rows, err := q.db.QueryContext(ctx, searchGame, arg.Limit, arg.Query, arg.Offset)
+	rows, err := q.db.QueryContext(ctx, searchGame, arg.Query, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -45,6 +64,8 @@ func (q *Queries) SearchGame(ctx context.Context, arg SearchGameParams) ([]Searc
 			&i.ID,
 			&i.Name,
 			&i.CoverImageID,
+			&i.FirstReleaseDate,
+			&i.Platforms,
 			&i.TotalPages,
 		); err != nil {
 			return nil, err

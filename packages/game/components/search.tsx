@@ -5,7 +5,7 @@ import { useAsync } from "design-system/lib/hook";
 import { useState } from "preact/hooks";
 import { GameService } from "proto";
 
-export function Add() {
+export function Search() {
   const client = useClient(GameService);
 
   const { searchParams, setSearchParams } = useLocation();
@@ -13,7 +13,7 @@ export function Add() {
 
   const page = Number(searchParams.get("p") ?? 1);
   if (isNaN(page)) {
-    return <Redirect to="/game/add" />;
+    return <Redirect to="/game/search" />;
   }
 
   const { loading, data } = useAsync(
@@ -63,6 +63,20 @@ export function Add() {
 
             <div class="card-body p-4">
               <h2 class="card-title text-base">{game.name}</h2>
+
+              {game.platforms.length > 0 ? (
+                <p class="text-xs">{game.platforms.map((v) => v.name).join(" / ")}</p>
+              ) : null}
+
+              {game.releaseDate ? (
+                <p class="text-base-content/50">
+                  {new Date(game.releaseDate).toLocaleDateString(navigator.languages, {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </p>
+              ) : null}
             </div>
           </div>
         ))}

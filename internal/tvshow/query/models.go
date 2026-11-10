@@ -44,7 +44,6 @@ type IgdbGame struct {
 	Type             string
 	Status           sql.NullString
 	ParentGameID     sql.NullInt64
-	VersionParentID  sql.NullInt64
 	RelatedGameIds   []int64
 	DeveloperIds     []int64
 	PublisherIds     []int64
@@ -65,7 +64,6 @@ type IgdbMainGame struct {
 	Type             string
 	Status           sql.NullString
 	ParentGameID     sql.NullInt64
-	VersionParentID  sql.NullInt64
 	RelatedGameIds   []int64
 	DeveloperIds     []int64
 	PublisherIds     []int64

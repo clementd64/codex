@@ -4,14 +4,13 @@
 
 import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import { file_google_protobuf_empty } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file proto/game/game.proto.
  */
 export const file_proto_game_game: GenFile = /*@__PURE__*/
-  fileDesc("ChVwcm90by9nYW1lL2dhbWUucHJvdG8SCmNvZGV4LmdhbWUiLAoNU2VhcmNoUmVxdWVzdBINCgVxdWVyeRgBIAEoCRIMCgRwYWdlGAIgASgFIlwKDlNlYXJjaFJlc3BvbnNlEicKB3Jlc3VsdHMYASADKAsyFi5jb2RleC5nYW1lLlNlYXJjaEdhbWUSDAoEcGFnZRgCIAEoBRITCgt0b3RhbF9wYWdlcxgDIAEoBSJTCgpTZWFyY2hHYW1lEgoKAmlkGAEgASgFEgwKBG5hbWUYAiABKAkSEgoFY292ZXIYAyABKAlIAIgBARINCgVhZGRlZBgIIAEoCEIICgZfY292ZXIyUAoLR2FtZVNlcnZpY2USQQoGU2VhcmNoEhkuY29kZXguZ2FtZS5TZWFyY2hSZXF1ZXN0GhouY29kZXguZ2FtZS5TZWFyY2hSZXNwb25zZSIAQpoBCg5jb20uY29kZXguZ2FtZUIJR2FtZVByb3RvUAFaNGdpdGh1Yi5jb20vY2xlbWVudGQ2NC9jb2RleC9pbnRlcm5hbC9nYW1lL3Byb3RvO2dhbWWiAgNDR1iqAgpDb2RleC5HYW1lygIKQ29kZXhcR2FtZeICFkNvZGV4XEdhbWVcR1BCTWV0YWRhdGHqAgtDb2RleDo6R2FtZWIGcHJvdG8z", [file_google_protobuf_empty]);
+  fileDesc("ChVwcm90by9nYW1lL2dhbWUucHJvdG8SCmNvZGV4LmdhbWUiLAoNU2VhcmNoUmVxdWVzdBINCgVxdWVyeRgBIAEoCRIMCgRwYWdlGAIgASgFIlwKDlNlYXJjaFJlc3BvbnNlEicKB3Jlc3VsdHMYASADKAsyFi5jb2RleC5nYW1lLlNlYXJjaEdhbWUSDAoEcGFnZRgCIAEoBRITCgt0b3RhbF9wYWdlcxgDIAEoBSKoAQoKU2VhcmNoR2FtZRIKCgJpZBgBIAEoBRIMCgRuYW1lGAIgASgJEhIKBWNvdmVyGAMgASgJSACIAQESJwoJcGxhdGZvcm1zGAQgAygLMhQuY29kZXguZ2FtZS5QbGF0Zm9ybRIZCgxyZWxlYXNlX2RhdGUYBSABKAlIAYgBARINCgVhZGRlZBgGIAEoCEIICgZfY292ZXJCDwoNX3JlbGVhc2VfZGF0ZSI6CghQbGF0Zm9ybRIKCgJpZBgBIAEoAxIMCgRuYW1lGAIgASgJEhQKDGFiYnJldmlhdGlvbhgDIAEoCTJQCgtHYW1lU2VydmljZRJBCgZTZWFyY2gSGS5jb2RleC5nYW1lLlNlYXJjaFJlcXVlc3QaGi5jb2RleC5nYW1lLlNlYXJjaFJlc3BvbnNlIgBCmgEKDmNvbS5jb2RleC5nYW1lQglHYW1lUHJvdG9QAVo0Z2l0aHViLmNvbS9jbGVtZW50ZDY0L2NvZGV4L2ludGVybmFsL2dhbWUvcHJvdG87Z2FtZaICA0NHWKoCCkNvZGV4LkdhbWXKAgpDb2RleFxHYW1l4gIWQ29kZXhcR2FtZVxHUEJNZXRhZGF0YeoCC0NvZGV4OjpHYW1lYgZwcm90bzM");
 
 /**
  * @generated from message codex.game.SearchRequest
@@ -82,7 +81,17 @@ export type SearchGame = Message<"codex.game.SearchGame"> & {
   cover?: string | undefined;
 
   /**
-   * @generated from field: bool added = 8;
+   * @generated from field: repeated codex.game.Platform platforms = 4;
+   */
+  platforms: Platform[];
+
+  /**
+   * @generated from field: optional string release_date = 5;
+   */
+  releaseDate?: string | undefined;
+
+  /**
+   * @generated from field: bool added = 6;
    */
   added: boolean;
 };
@@ -93,6 +102,33 @@ export type SearchGame = Message<"codex.game.SearchGame"> & {
  */
 export const SearchGameSchema: GenMessage<SearchGame> = /*@__PURE__*/
   messageDesc(file_proto_game_game, 2);
+
+/**
+ * @generated from message codex.game.Platform
+ */
+export type Platform = Message<"codex.game.Platform"> & {
+  /**
+   * @generated from field: int64 id = 1;
+   */
+  id: bigint;
+
+  /**
+   * @generated from field: string name = 2;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string abbreviation = 3;
+   */
+  abbreviation: string;
+};
+
+/**
+ * Describes the message codex.game.Platform.
+ * Use `create(PlatformSchema)` to create a new message.
+ */
+export const PlatformSchema: GenMessage<Platform> = /*@__PURE__*/
+  messageDesc(file_proto_game_game, 3);
 
 /**
  * @generated from service codex.game.GameService

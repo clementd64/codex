@@ -68,7 +68,6 @@ type Game struct {
 	Type                 *GameType         `json:"game_type"`
 	Status               *GameStatus       `json:"game_status"`
 	ParentGame           int64             `json:"parent_game"`
-	VersionParent        int64             `json:"version_parent"`
 	DLCs                 []int64           `json:"dlcs"`
 	Expansions           []int64           `json:"expansions"`
 	StandaloneExpansions []int64           `json:"standalone_expansions"`

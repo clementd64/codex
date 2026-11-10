@@ -93,7 +93,6 @@ type gameRow struct {
 	Status           string                         `json:"status"`
 	Type             string                         `json:"type"`
 	ParentGameID     int64                          `json:"parent_game_id"`
-	VersionParentID  int64                          `json:"version_parent_id"`
 	RelatedGameIDs   []int64                        `json:"related_game_ids"`
 	DeveloperIDs     []int64                        `json:"developer_ids"`
 	PublisherIDs     []int64                        `json:"publisher_ids"`
@@ -107,8 +106,8 @@ type gameLocalizationRow struct {
 }
 
 func (c *Client) FetchGames(ctx context.Context, queries *igdbquery.Queries) (int, error) {
-	const fields = "name,summary,first_release_date,cover.image_id,game_localizations.name,game_localizations.region.identifier,game_localizations.cover.image_id,keywords.name,platforms,franchise,franchises,game_type.type,game_status.status,parent_game,version_parent,dlcs,expansions,standalone_expansions,remakes,remasters,ports,expanded_games,involved_companies.company,involved_companies.developer,involved_companies.publisher"
-	return c.FetchAll(ctx, "games", fields, "game_type = (0,1,2,3,4,6,7,8,9,10,11,13,14)", func(page []Game) (int, error) {
+	const fields = "name,summary,first_release_date,cover.image_id,game_localizations.name,game_localizations.region.identifier,game_localizations.cover.image_id,keywords.name,platforms,franchise,franchises,game_type.type,game_status.status,parent_game,dlcs,expansions,standalone_expansions,remakes,remasters,ports,expanded_games,involved_companies.company,involved_companies.developer,involved_companies.publisher"
+	return c.FetchAll(ctx, "games", fields, "game_type = (0,1,2,3,4,6,7,8,9,10,11,13,14) & version_parent = null", func(page []Game) (int, error) {
 		rows := make([]gameRow, 0, len(page))
 		for _, game := range page {
 			if game.Type == nil || !officialGameType(game.Type.ID) || slices.ContainsFunc(game.Keywords, func(keyword Keyword) bool {
@@ -120,7 +119,7 @@ func (c *Client) FetchGames(ctx context.Context, queries *igdbquery.Queries) (in
 				Record: game.Record, Name: game.Name, Summary: game.Summary, FirstReleaseDate: game.FirstReleaseDate,
 				Localizations: make(map[string]gameLocalizationRow),
 				PlatformIDs:   game.Platforms, MainFranchiseID: game.Franchise, FranchiseIDs: game.Franchises,
-				Type: game.Type.Type, ParentGameID: game.ParentGame, VersionParentID: game.VersionParent,
+				Type: game.Type.Type, ParentGameID: game.ParentGame,
 			}
 			if game.Status != nil {
 				row.Status = game.Status.Status

@@ -5,11 +5,11 @@ export function Home() {
   useMenuAction(
     [
       {
-        name: "Add",
-        icon: "icon-[mdi--add]",
+        name: "Search",
+        icon: "icon-[mdi--search]",
         class: "btn-primary",
         onClick() {
-          goto("/game/add");
+          goto("/game/search");
         },
       },
     ],

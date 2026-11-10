@@ -65,7 +65,6 @@ create table igdb.game (
     type varchar not null,
     status varchar,
     parent_game_id bigint,
-    version_parent_id bigint,
     related_game_ids bigint[] not null,
     developer_ids bigint[] not null,
     publisher_ids bigint[] not null,

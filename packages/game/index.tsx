@@ -1,6 +1,6 @@
 import { Router } from "design-system/components/router";
 import { Home } from "./components/home";
-import { Add } from "./components/add";
+import { Search } from "./components/search";
 
 const routes = [
   {
@@ -8,8 +8,8 @@ const routes = [
     component: Home,
   },
   {
-    pattern: new URLPattern({ pathname: "/game/add" }),
-    component: Add,
+    pattern: new URLPattern({ pathname: "/game/search" }),
+    component: Search,
   },
 ];
 

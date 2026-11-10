@@ -58,19 +58,19 @@ const upsertGames = `-- name: UpsertGames :exec
 insert into igdb.game (
     id, name, summary, first_release_date, cover_image_id,
     platform_ids, main_franchise_id, franchise_ids, type, status,
-    parent_game_id, version_parent_id, related_game_ids, developer_ids, publisher_ids, localizations
+    parent_game_id, related_game_ids, developer_ids, publisher_ids, localizations
 )
 select id, name, nullif(summary, ''), to_timestamp(nullif(first_release_date, 0)), nullif(cover_image_id, ''),
        coalesce(platform_ids, '{}'::bigint[]), nullif(main_franchise_id, 0),
        coalesce(franchise_ids, '{}'::bigint[]), type, nullif(status, ''),
-       nullif(parent_game_id, 0), nullif(version_parent_id, 0),
+       nullif(parent_game_id, 0),
        coalesce(related_game_ids, '{}'::bigint[]),
        coalesce(developer_ids, '{}'::bigint[]), coalesce(publisher_ids, '{}'::bigint[]),
        coalesce(nullif(localizations, 'null'::jsonb), '{}'::jsonb)
 from jsonb_to_recordset($1::jsonb) as batch(
     id bigint, name text, summary text, first_release_date bigint, cover_image_id text,
     platform_ids bigint[], main_franchise_id bigint, franchise_ids bigint[], type text, status text,
-    parent_game_id bigint, version_parent_id bigint, related_game_ids bigint[],
+    parent_game_id bigint, related_game_ids bigint[],
     developer_ids bigint[], publisher_ids bigint[], localizations jsonb
 )
 on conflict (id) do update set
@@ -83,7 +83,6 @@ on conflict (id) do update set
     type = excluded.type,
     status = excluded.status,
     parent_game_id = excluded.parent_game_id,
-    version_parent_id = excluded.version_parent_id,
     related_game_ids = excluded.related_game_ids,
     developer_ids = excluded.developer_ids,
     publisher_ids = excluded.publisher_ids,

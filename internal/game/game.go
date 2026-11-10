@@ -2,8 +2,10 @@ package game
 
 import (
 	"context"
+	"encoding/json"
 	"log/slog"
 	"strings"
+	"time"
 
 	"connectrpc.com/connect/v2"
 	"github.com/clementd64/codex/internal/app"
@@ -29,6 +31,10 @@ func (s *GameServer) Search(
 		return nil, connect.NewError(connect.CodeInvalidArgument, "page must be positive")
 	}
 
+	if len(strings.TrimSpace(req.GetQuery())) < 3 {
+		return nil, connect.NewError(connect.CodeInvalidArgument, "query too short")
+	}
+
 	games, err := s.query.SearchGame(ctx, gamequery.SearchGameParams{
 		Query:  strings.TrimSpace(req.GetQuery()),
 		Limit:  24,
@@ -51,18 +57,31 @@ func (s *GameServer) Search(
 		Results:    make([]*gamepb.SearchGame, len(games)),
 	}
 	for i, game := range games {
+		var platforms []*gamepb.Platform
+		if err := json.Unmarshal(game.Platforms, &platforms); err != nil {
+			return nil, connect.NewError(connect.CodeInternal, err.Error())
+		}
+
+		var releaseDate *string
+		if game.FirstReleaseDate.Valid {
+			date := game.FirstReleaseDate.Time.UTC().Format(time.DateOnly)
+			releaseDate = &date
+		}
+
 		var cover *string
-		if game.CoverImageID.Valid {
+		if game.CoverImageID != "" {
 			c := "https://images.igdb.com/igdb/image/upload/t_cover_big/" +
-				game.CoverImageID.String + ".jpg"
+				game.CoverImageID + ".jpg"
 			cover = &c
 		}
 
 		res.Results[i] = &gamepb.SearchGame{
-			Id:    int32(game.ID),
-			Name:  game.Name,
-			Cover: cover,
-			Added: false,
+			Id:          int32(game.ID),
+			Name:        game.Name,
+			Cover:       cover,
+			Platforms:   platforms,
+			ReleaseDate: releaseDate,
+			Added:       false,
 		}
 	}
 

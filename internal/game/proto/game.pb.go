@@ -9,7 +9,6 @@ package game
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	_ "google.golang.org/protobuf/types/known/emptypb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -139,7 +138,9 @@ type SearchGame struct {
 	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Cover         *string                `protobuf:"bytes,3,opt,name=cover,proto3,oneof" json:"cover,omitempty"`
-	Added         bool                   `protobuf:"varint,8,opt,name=added,proto3" json:"added,omitempty"`
+	Platforms     []*Platform            `protobuf:"bytes,4,rep,name=platforms,proto3" json:"platforms,omitempty"`
+	ReleaseDate   *string                `protobuf:"bytes,5,opt,name=release_date,json=releaseDate,proto3,oneof" json:"release_date,omitempty"`
+	Added         bool                   `protobuf:"varint,6,opt,name=added,proto3" json:"added,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -195,6 +196,20 @@ func (x *SearchGame) GetCover() string {
 	return ""
 }
 
+func (x *SearchGame) GetPlatforms() []*Platform {
+	if x != nil {
+		return x.Platforms
+	}
+	return nil
+}
+
+func (x *SearchGame) GetReleaseDate() string {
+	if x != nil && x.ReleaseDate != nil {
+		return *x.ReleaseDate
+	}
+	return ""
+}
+
 func (x *SearchGame) GetAdded() bool {
 	if x != nil {
 		return x.Added
@@ -202,12 +217,72 @@ func (x *SearchGame) GetAdded() bool {
 	return false
 }
 
+type Platform struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Abbreviation  string                 `protobuf:"bytes,3,opt,name=abbreviation,proto3" json:"abbreviation,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Platform) Reset() {
+	*x = Platform{}
+	mi := &file_proto_game_game_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Platform) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Platform) ProtoMessage() {}
+
+func (x *Platform) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_game_game_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Platform.ProtoReflect.Descriptor instead.
+func (*Platform) Descriptor() ([]byte, []int) {
+	return file_proto_game_game_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *Platform) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *Platform) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *Platform) GetAbbreviation() string {
+	if x != nil {
+		return x.Abbreviation
+	}
+	return ""
+}
+
 var File_proto_game_game_proto protoreflect.FileDescriptor
 
 const file_proto_game_game_proto_rawDesc = "" +
 	"\n" +
 	"\x15proto/game/game.proto\x12\n" +
-	"codex.game\x1a\x1bgoogle/protobuf/empty.proto\"9\n" +
+	"codex.game\"9\n" +
 	"\rSearchRequest\x12\x14\n" +
 	"\x05query\x18\x01 \x01(\tR\x05query\x12\x12\n" +
 	"\x04page\x18\x02 \x01(\x05R\x04page\"w\n" +
@@ -215,14 +290,21 @@ const file_proto_game_game_proto_rawDesc = "" +
 	"\aresults\x18\x01 \x03(\v2\x16.codex.game.SearchGameR\aresults\x12\x12\n" +
 	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x1f\n" +
 	"\vtotal_pages\x18\x03 \x01(\x05R\n" +
-	"totalPages\"k\n" +
+	"totalPages\"\xd8\x01\n" +
 	"\n" +
 	"SearchGame\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x19\n" +
-	"\x05cover\x18\x03 \x01(\tH\x00R\x05cover\x88\x01\x01\x12\x14\n" +
-	"\x05added\x18\b \x01(\bR\x05addedB\b\n" +
-	"\x06_cover2P\n" +
+	"\x05cover\x18\x03 \x01(\tH\x00R\x05cover\x88\x01\x01\x122\n" +
+	"\tplatforms\x18\x04 \x03(\v2\x14.codex.game.PlatformR\tplatforms\x12&\n" +
+	"\frelease_date\x18\x05 \x01(\tH\x01R\vreleaseDate\x88\x01\x01\x12\x14\n" +
+	"\x05added\x18\x06 \x01(\bR\x05addedB\b\n" +
+	"\x06_coverB\x0f\n" +
+	"\r_release_date\"R\n" +
+	"\bPlatform\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\"\n" +
+	"\fabbreviation\x18\x03 \x01(\tR\fabbreviation2P\n" +
 	"\vGameService\x12A\n" +
 	"\x06Search\x12\x19.codex.game.SearchRequest\x1a\x1a.codex.game.SearchResponse\"\x00B\x9a\x01\n" +
 	"\x0ecom.codex.gameB\tGameProtoP\x01Z4github.com/clementd64/codex/internal/game/proto;game\xa2\x02\x03CGX\xaa\x02\n" +
@@ -241,21 +323,23 @@ func file_proto_game_game_proto_rawDescGZIP() []byte {
 	return file_proto_game_game_proto_rawDescData
 }
 
-var file_proto_game_game_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_proto_game_game_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_proto_game_game_proto_goTypes = []any{
 	(*SearchRequest)(nil),  // 0: codex.game.SearchRequest
 	(*SearchResponse)(nil), // 1: codex.game.SearchResponse
 	(*SearchGame)(nil),     // 2: codex.game.SearchGame
+	(*Platform)(nil),       // 3: codex.game.Platform
 }
 var file_proto_game_game_proto_depIdxs = []int32{
 	2, // 0: codex.game.SearchResponse.results:type_name -> codex.game.SearchGame
-	0, // 1: codex.game.GameService.Search:input_type -> codex.game.SearchRequest
-	1, // 2: codex.game.GameService.Search:output_type -> codex.game.SearchResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	3, // 1: codex.game.SearchGame.platforms:type_name -> codex.game.Platform
+	0, // 2: codex.game.GameService.Search:input_type -> codex.game.SearchRequest
+	1, // 3: codex.game.GameService.Search:output_type -> codex.game.SearchResponse
+	3, // [3:4] is the sub-list for method output_type
+	2, // [2:3] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_proto_game_game_proto_init() }
@@ -270,7 +354,7 @@ func file_proto_game_game_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_game_game_proto_rawDesc), len(file_proto_game_game_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
