@@ -18,21 +18,22 @@ import (
 	"github.com/clementd64/codex/internal/tvshow"
 )
 
-func server(ctx context.Context, app *app.App) error {
-	server := connect.NewServer(auth.Middleware(app.SigningKey))
-	auth.Register(server, app)
-	game.Register(server, app)
-	tvshow.Register(server, app)
+func server(ctx context.Context, application *app.App) error {
+	server := connect.NewServer(auth.Middleware(application.SigningKey))
+	auth.Register(server, application)
+	game.Register(server, application)
+	tvshowServer := tvshow.Register(server, application)
 
 	api := http.NewServeMux()
 	connecthttp.Mount(api, server)
 
 	mux := http.NewServeMux()
 	mux.Handle("/api/", http.StripPrefix("/api", api))
+	mux.Handle("GET /ical/tvshow/{user}", app.IcalHandler(tvshowServer))
 	mux.Handle("/", frontend())
 
 	srv := &http.Server{
-		Addr:     app.ListenAddr,
+		Addr:     application.ListenAddr,
 		Handler:  mux,
 		ErrorLog: slog.NewLogLogger(slog.Default().Handler(), slog.LevelError),
 	}
@@ -48,7 +49,7 @@ func server(ctx context.Context, app *app.App) error {
 		}
 	}()
 
-	slog.InfoContext(ctx, "Starting server", "addr", app.ListenAddr)
+	slog.InfoContext(ctx, "Starting server", "addr", application.ListenAddr)
 	err := srv.ListenAndServe()
 	if errors.Is(err, http.ErrServerClosed) {
 		return nil

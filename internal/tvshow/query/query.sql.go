@@ -8,6 +8,7 @@ package tvshowquery
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	"github.com/lib/pq"
 	"uuid"
@@ -66,6 +67,54 @@ func (q *Queries) FetchShowBatch(ctx context.Context, arg FetchShowBatchParams) 
 			return nil, err
 		}
 		items = append(items, tmdb_id)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getIcal = `-- name: GetIcal :many
+select
+  concat(show.id, '-', episode.season, '-', episode.episode)::text as uid,
+  episode.air_date::timestamp as date,
+  concat(
+    show.name,
+    ' S',
+    case when episode.season < 10 then '0' || episode.season::text else episode.season::text end,
+    ' E',
+    case when episode.episode < 10 then '0' || episode.episode::text else episode.episode::text end
+  )::text as summary
+from tvshow.user_show
+  join tvshow.show on user_show.show_id = show.id
+  join tvshow.episode on show.id = episode.show_id
+where user_show.user_id = $1
+  and episode.air_date is not null
+  and episode.air_date::timestamp > now() - interval '15 day'
+`
+
+type GetIcalRow struct {
+	Uid     string
+	Date    time.Time
+	Summary string
+}
+
+func (q *Queries) GetIcal(ctx context.Context, userID uuid.UUID) ([]GetIcalRow, error) {
+	rows, err := q.db.QueryContext(ctx, getIcal, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetIcalRow
+	for rows.Next() {
+		var i GetIcalRow
+		if err := rows.Scan(&i.Uid, &i.Date, &i.Summary); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
 	}
 	if err := rows.Close(); err != nil {
 		return nil, err

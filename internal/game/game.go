@@ -88,9 +88,11 @@ func (s *GameServer) Search(
 	return res, nil
 }
 
-func Register(server *connect.Server, application *app.App) {
-	gameconnect.RegisterGameServiceHandler(server, &GameServer{
+func Register(server *connect.Server, application *app.App) *GameServer {
+	s := &GameServer{
 		app:   application,
 		query: gamequery.New(application.DB),
-	})
+	}
+	gameconnect.RegisterGameServiceHandler(server, s)
+	return s
 }

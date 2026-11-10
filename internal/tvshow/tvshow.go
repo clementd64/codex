@@ -218,11 +218,25 @@ func (s *TvShowServer) Delete(
 	return &emptypb.Empty{}, nil
 }
 
-func Register(server *connect.Server, application *app.App) {
+func (s *TvShowServer) ICal(ctx context.Context, user uuid.UUID) ([]app.ICalEntry, error) {
+	rows, err := s.query.GetIcal(ctx, user)
+	if err != nil {
+		return nil, err
+	}
+	entries := make([]app.ICalEntry, 0, len(rows))
+	for _, row := range rows {
+		entries = append(entries, app.ICalEntry(row))
+	}
+	return entries, nil
+}
+
+func Register(server *connect.Server, application *app.App) *TvShowServer {
 	tmdbClient, _ := tmdb.NewTMDBClient(application.TMDBApikey)
-	tvshowconnect.RegisterTvShowServiceHandler(server, &TvShowServer{
+	s := &TvShowServer{
 		app:   application,
 		tmdb:  tmdbClient,
 		query: tvshowquery.New(application.DB),
-	})
+	}
+	tvshowconnect.RegisterTvShowServiceHandler(server, s)
+	return s
 }

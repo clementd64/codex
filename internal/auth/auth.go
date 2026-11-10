@@ -58,9 +58,11 @@ func (s *AuthServer) Token(
 	return &authpb.TokenResponse{Token: signed, Expiration: uint64(expires.Unix())}, nil
 }
 
-func Register(server *connect.Server, application *app.App) {
-	authconnect.RegisterAuthServiceHandler(server, &AuthServer{
+func Register(server *connect.Server, application *app.App) *AuthServer {
+	s := &AuthServer{
 		app:   application,
 		query: authquery.New(application.DB),
-	})
+	}
+	authconnect.RegisterAuthServiceHandler(server, s)
+	return s
 }

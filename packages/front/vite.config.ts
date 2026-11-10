@@ -7,6 +7,7 @@ export default defineConfig({
     strictPort: true,
     proxy: {
       "/api/": "http://localhost:8080",
+      "/ical/": "http://localhost:8080",
       "/dex": "http://dex:5556",
     },
   },

@@ -13,20 +13,6 @@ insert into tvshow.user_show (user_id, show_id) values (@user_id, @show_id);
 -- name: DeleteUserShow :exec
 delete from tvshow.user_show where user_id = @user_id and show_id = @show_id;
 
--- name: UpsertShow :one
-insert into tvshow.show (tmdb_id, name, poster, firstAirDate, country, originalName, status, backdrop)
-values ($1, $2, $3, $4, $5, $6, $7, $8)
-on conflict (tmdb_id) do update set
-    name = excluded.name,
-    poster = excluded.poster,
-    firstAirDate = excluded.firstAirDate,
-    country = excluded.country,
-    originalName = excluded.originalName,
-    status = excluded.status,
-    backdrop = excluded.backdrop,
-    synced_at = now()
-returning id;
-
 -- name: ListAddedShowIDs :many
 select show.tmdb_id
 from tvshow.show
@@ -43,6 +29,21 @@ where tmdb_id > @last_id
 order by tmdb_id
 limit @_limit;
 
+
+-- name: UpsertShow :one
+insert into tvshow.show (tmdb_id, name, poster, firstAirDate, country, originalName, status, backdrop)
+values ($1, $2, $3, $4, $5, $6, $7, $8)
+on conflict (tmdb_id) do update set
+    name = excluded.name,
+    poster = excluded.poster,
+    firstAirDate = excluded.firstAirDate,
+    country = excluded.country,
+    originalName = excluded.originalName,
+    status = excluded.status,
+    backdrop = excluded.backdrop,
+    synced_at = now()
+returning id;
+
 -- name: UpsertEpisode :exec
 insert into tvshow.episode (show_id, season, episode, name, air_date, preview)
 values (@show_id, @season, @episode, @name, @air_date, @preview)
@@ -50,3 +51,21 @@ on conflict (show_id, season, episode) do update set
     name = excluded.name,
     air_date = excluded.air_date,
     preview = excluded.preview;
+
+-- name: GetIcal :many
+select
+  concat(show.id, '-', episode.season, '-', episode.episode)::text as uid,
+  episode.air_date::timestamp as date,
+  concat(
+    show.name,
+    ' S',
+    case when episode.season < 10 then '0' || episode.season::text else episode.season::text end,
+    ' E',
+    case when episode.episode < 10 then '0' || episode.episode::text else episode.episode::text end
+  )::text as summary
+from tvshow.user_show
+  join tvshow.show on user_show.show_id = show.id
+  join tvshow.episode on show.id = episode.show_id
+where user_show.user_id = @user_id
+  and episode.air_date is not null
+  and episode.air_date::timestamp > now() - interval '15 day';
