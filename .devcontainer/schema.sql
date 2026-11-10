@@ -85,7 +85,6 @@ where type not in (
     'Expansion',
     'Pack / Addon',
     'Season',
-    'Standalone Expansion',
     'Update'
 ) and (status is null or status not in (
     'Rumored',
