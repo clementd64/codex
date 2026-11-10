@@ -9,15 +9,16 @@ import (
 
 	"github.com/clementd64/codex/internal/app"
 	"github.com/clementd64/codex/internal/igdb"
+	"github.com/clementd64/codex/internal/tvshow"
 )
 
 func Run(ctx context.Context, args []string) error {
 	ctx, cancel := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
 	defer cancel()
 
-	if len(os.Args) < 2 {
+	if len(args) < 2 {
 		usage()
-		os.Exit(1)
+		return fmt.Errorf("command required")
 	}
 
 	app, err := app.New()
@@ -26,21 +27,22 @@ func Run(ctx context.Context, args []string) error {
 	}
 	defer app.DB.Close()
 
-	switch os.Args[1] {
+	switch args[1] {
 	case "server":
 		return server(ctx, app)
 	case "fetch-igdb":
 		return igdb.Fetch(ctx, app)
+	case "fetch-tvshow":
+		return tvshow.Fetch(ctx, app)
 	default:
 		usage()
-		os.Exit(1)
+		return fmt.Errorf("unknown command %q", args[1])
 	}
-
-	return nil
 }
 
 func usage() {
 	fmt.Fprintln(os.Stderr, `Usage:
   codex server
-  codex fetch-igdb`)
+  codex fetch-igdb
+  codex fetch-tvshow`)
 }

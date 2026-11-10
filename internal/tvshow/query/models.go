@@ -80,6 +80,15 @@ type IgdbPlatform struct {
 	SyncedAt     time.Time
 }
 
+type TvshowEpisode struct {
+	ShowID  uuid.UUID
+	Season  int32
+	Episode int32
+	Name    string
+	AirDate sql.NullTime
+	Preview sql.NullString
+}
+
 type TvshowShow struct {
 	ID           uuid.UUID
 	TmdbID       int32
@@ -88,6 +97,9 @@ type TvshowShow struct {
 	Firstairdate sql.NullTime
 	Country      sql.NullString
 	Originalname sql.NullString
+	Status       sql.NullString
+	Backdrop     sql.NullString
+	SyncedAt     time.Time
 	CreatedAt    time.Time
 }
 

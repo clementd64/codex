@@ -76,6 +76,7 @@ func (s *TvShowServer) List(
 			FirstAirDate: firstAirDate,
 			Country:      &show.Country.String,
 			OriginalName: &show.Originalname.String,
+			Status:       nullableStringPointer(show.Status),
 		}
 	}
 
@@ -172,33 +173,13 @@ func (s *TvShowServer) Add(
 
 	showID, err := s.query.GetShowID(ctx, req.GetTmdbId())
 	if errors.Is(err, sql.ErrNoRows) {
-		show, err := tmdb.Unwrap(s.tmdb.TvSeriesDetailsWithResponse(ctx, req.GetTmdbId(), nil))
+		showID, err = syncShow(ctx, s.app.DB, s.tmdb, req.GetTmdbId())
 		if err != nil {
-			slog.ErrorContext(ctx, "TMDB details failed", "error", err)
-			return nil, err
-		}
-
-		params := tvshowquery.UpsertShowParams{
-			TmdbID:       req.GetTmdbId(),
-			Name:         show.Name,
-			Originalname: sql.NullString{String: show.OriginalName, Valid: show.OriginalName != ""},
-			Poster:       sql.NullString{String: show.PosterPath, Valid: show.PosterPath != ""},
-		}
-		if len(show.OriginCountry) > 0 {
-			params.Country = sql.NullString{String: show.OriginCountry[0], Valid: show.OriginCountry[0] != ""}
-		}
-		if show.FirstAirDate != "" {
-			date, err := time.Parse(time.DateOnly, show.FirstAirDate)
-			if err != nil {
-				return nil, connect.NewError(connect.CodeUnavailable, "TV show has an invalid first air date")
+			slog.ErrorContext(ctx, "Fetching TV show failed", "error", err)
+			if connect.CodeOf(err) == connect.CodeUnknown {
+				return nil, connect.NewError(connect.CodeInternal, "could not save TV show")
 			}
-			params.Firstairdate = sql.NullTime{Time: date, Valid: true}
-		}
-
-		showID, err = s.query.UpsertShow(ctx, params)
-		if err != nil {
-			slog.ErrorContext(ctx, "Saving TV show failed", "error", err)
-			return nil, connect.NewError(connect.CodeInternal, "could not save TV show")
+			return nil, err
 		}
 	} else if err != nil {
 		slog.ErrorContext(ctx, "TV show lookup failed", "error", err)

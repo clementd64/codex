@@ -56,6 +56,10 @@ export function Home() {
             ) : null}
 
             <div class="card-body p-4">
+              {show.status ? (
+                <div class={`badge badge-sm ${statusBadgeColor(show.status)}`}>{show.status}</div>
+              ) : null}
+
               <h2 class="card-title text-base">
                 {show.country ? countryCodeToFlag(show.country) : ""} {show.name}
               </h2>
@@ -99,4 +103,15 @@ export function Home() {
       />
     </div>
   );
+}
+
+function statusBadgeColor(status: string) {
+  switch (status) {
+    case "Canceled":
+      return "badge-error";
+    case "Ended":
+      return "badge-warning";
+    default:
+      return "badge-neutral";
+  }
 }

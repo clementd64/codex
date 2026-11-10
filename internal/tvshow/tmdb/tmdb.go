@@ -1,6 +1,9 @@
 package tmdb
 
-import "net/http"
+import (
+	"net/http"
+	"time"
+)
 
 //go:generate go tool oapi-codegen -config cfg.yaml https://developer.themoviedb.org/openapi/tmdb-api.json
 
@@ -17,6 +20,7 @@ func (t *AuthorizationTransport) RoundTrip(req *http.Request) (*http.Response, e
 
 func NewTMDBClient(apiKey string) (*ClientWithResponses, error) {
 	return NewClientWithResponses(ServerUrlHttpsapiThemoviedbOrg, WithHTTPClient(&http.Client{
+		Timeout: 30 * time.Second,
 		Transport: &AuthorizationTransport{
 			RoundTripper: http.DefaultTransport,
 			bearer:       apiKey,
@@ -26,4 +30,8 @@ func NewTMDBClient(apiKey string) (*ClientWithResponses, error) {
 
 func PosterPath(posterPath string) string {
 	return "https://image.tmdb.org/t/p/w500" + posterPath
+}
+
+func ImagePath(path string) string {
+	return "https://image.tmdb.org/t/p/w780" + path
 }

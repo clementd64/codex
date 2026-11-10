@@ -28,6 +28,7 @@ message TvShow {
   optional string first_air_date = 4;
   optional string country = 5;
   optional string original_name = 7;
+  optional string status = 8;
 }
 
 message SearchRequest {

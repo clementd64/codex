@@ -41,6 +41,41 @@ func (q *Queries) DeleteUserShow(ctx context.Context, arg DeleteUserShowParams) 
 	return err
 }
 
+const fetchShowBatch = `-- name: FetchShowBatch :many
+select tmdb_id from tvshow.show
+where tmdb_id > $1
+order by tmdb_id
+limit $2
+`
+
+type FetchShowBatchParams struct {
+	LastID int32
+	Limit  int32
+}
+
+func (q *Queries) FetchShowBatch(ctx context.Context, arg FetchShowBatchParams) ([]int32, error) {
+	rows, err := q.db.QueryContext(ctx, fetchShowBatch, arg.LastID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []int32
+	for rows.Next() {
+		var tmdb_id int32
+		if err := rows.Scan(&tmdb_id); err != nil {
+			return nil, err
+		}
+		items = append(items, tmdb_id)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getShowID = `-- name: GetShowID :one
 select id from tvshow.show where tmdb_id = $1
 `
@@ -89,7 +124,7 @@ func (q *Queries) ListAddedShowIDs(ctx context.Context, arg ListAddedShowIDsPara
 }
 
 const listShow = `-- name: ListShow :many
-select show.id, show.name, show.poster, show.firstAirDate, show.country, show.originalName,
+select show.id, show.name, show.poster, show.firstAirDate, show.country, show.originalName, show.status,
        ceil(count(*) over ()::numeric / $1)::bigint as total_pages
 from tvshow.show
 join tvshow.user_show on show.id = user_show.show_id
@@ -111,6 +146,7 @@ type ListShowRow struct {
 	Firstairdate sql.NullTime
 	Country      sql.NullString
 	Originalname sql.NullString
+	Status       sql.NullString
 	TotalPages   int64
 }
 
@@ -130,6 +166,7 @@ func (q *Queries) ListShow(ctx context.Context, arg ListShowParams) ([]ListShowR
 			&i.Firstairdate,
 			&i.Country,
 			&i.Originalname,
+			&i.Status,
 			&i.TotalPages,
 		); err != nil {
 			return nil, err
@@ -145,15 +182,48 @@ func (q *Queries) ListShow(ctx context.Context, arg ListShowParams) ([]ListShowR
 	return items, nil
 }
 
-const upsertShow = `-- name: UpsertShow :one
-insert into tvshow.show (tmdb_id, name, poster, firstAirDate, country, originalName)
+const upsertEpisode = `-- name: UpsertEpisode :exec
+insert into tvshow.episode (show_id, season, episode, name, air_date, preview)
 values ($1, $2, $3, $4, $5, $6)
+on conflict (show_id, season, episode) do update set
+    name = excluded.name,
+    air_date = excluded.air_date,
+    preview = excluded.preview
+`
+
+type UpsertEpisodeParams struct {
+	ShowID  uuid.UUID
+	Season  int32
+	Episode int32
+	Name    string
+	AirDate sql.NullTime
+	Preview sql.NullString
+}
+
+func (q *Queries) UpsertEpisode(ctx context.Context, arg UpsertEpisodeParams) error {
+	_, err := q.db.ExecContext(ctx, upsertEpisode,
+		arg.ShowID,
+		arg.Season,
+		arg.Episode,
+		arg.Name,
+		arg.AirDate,
+		arg.Preview,
+	)
+	return err
+}
+
+const upsertShow = `-- name: UpsertShow :one
+insert into tvshow.show (tmdb_id, name, poster, firstAirDate, country, originalName, status, backdrop)
+values ($1, $2, $3, $4, $5, $6, $7, $8)
 on conflict (tmdb_id) do update set
     name = excluded.name,
     poster = excluded.poster,
     firstAirDate = excluded.firstAirDate,
     country = excluded.country,
-    originalName = excluded.originalName
+    originalName = excluded.originalName,
+    status = excluded.status,
+    backdrop = excluded.backdrop,
+    synced_at = now()
 returning id
 `
 
@@ -164,6 +234,8 @@ type UpsertShowParams struct {
 	Firstairdate sql.NullTime
 	Country      sql.NullString
 	Originalname sql.NullString
+	Status       sql.NullString
+	Backdrop     sql.NullString
 }
 
 func (q *Queries) UpsertShow(ctx context.Context, arg UpsertShowParams) (uuid.UUID, error) {
@@ -174,6 +246,8 @@ func (q *Queries) UpsertShow(ctx context.Context, arg UpsertShowParams) (uuid.UU
 		arg.Firstairdate,
 		arg.Country,
 		arg.Originalname,
+		arg.Status,
+		arg.Backdrop,
 	)
 	var id uuid.UUID
 	err := row.Scan(&id)

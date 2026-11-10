@@ -134,6 +134,7 @@ type TvShow struct {
 	FirstAirDate  *string                `protobuf:"bytes,4,opt,name=first_air_date,json=firstAirDate,proto3,oneof" json:"first_air_date,omitempty"`
 	Country       *string                `protobuf:"bytes,5,opt,name=country,proto3,oneof" json:"country,omitempty"`
 	OriginalName  *string                `protobuf:"bytes,7,opt,name=original_name,json=originalName,proto3,oneof" json:"original_name,omitempty"`
+	Status        *string                `protobuf:"bytes,8,opt,name=status,proto3,oneof" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -206,6 +207,13 @@ func (x *TvShow) GetCountry() string {
 func (x *TvShow) GetOriginalName() string {
 	if x != nil && x.OriginalName != nil {
 		return *x.OriginalName
+	}
+	return ""
+}
+
+func (x *TvShow) GetStatus() string {
+	if x != nil && x.Status != nil {
+		return *x.Status
 	}
 	return ""
 }
@@ -513,19 +521,21 @@ const file_proto_tvshow_tvshow_proto_rawDesc = "" +
 	"\aresults\x18\x01 \x03(\v2\x14.codex.tvshow.TvShowR\aresults\x12\x12\n" +
 	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x1f\n" +
 	"\vtotal_pages\x18\x03 \x01(\x05R\n" +
-	"totalPages\"\xf9\x01\n" +
+	"totalPages\"\xa1\x02\n" +
 	"\x06TvShow\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1b\n" +
 	"\x06poster\x18\x03 \x01(\tH\x00R\x06poster\x88\x01\x01\x12)\n" +
 	"\x0efirst_air_date\x18\x04 \x01(\tH\x01R\ffirstAirDate\x88\x01\x01\x12\x1d\n" +
 	"\acountry\x18\x05 \x01(\tH\x02R\acountry\x88\x01\x01\x12(\n" +
-	"\roriginal_name\x18\a \x01(\tH\x03R\foriginalName\x88\x01\x01B\t\n" +
+	"\roriginal_name\x18\a \x01(\tH\x03R\foriginalName\x88\x01\x01\x12\x1b\n" +
+	"\x06status\x18\b \x01(\tH\x04R\x06status\x88\x01\x01B\t\n" +
 	"\a_posterB\x11\n" +
 	"\x0f_first_air_dateB\n" +
 	"\n" +
 	"\b_countryB\x10\n" +
-	"\x0e_original_name\"9\n" +
+	"\x0e_original_nameB\t\n" +
+	"\a_status\"9\n" +
 	"\rSearchRequest\x12\x14\n" +
 	"\x05query\x18\x01 \x01(\tR\x05query\x12\x12\n" +
 	"\x04page\x18\x02 \x01(\x05R\x04page\"{\n" +

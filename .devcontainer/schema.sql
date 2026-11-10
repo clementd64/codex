@@ -20,7 +20,20 @@ create table tvshow.show (
     firstAirDate date,
     country char(2),
     originalName varchar,
+    status varchar,
+    backdrop varchar,
+    synced_at timestamptz not null default now(),
     created_at timestamptz not null default now()
+);
+
+create table tvshow.episode (
+    show_id uuid not null references tvshow.show(id) on delete cascade,
+    season int not null,
+    episode int not null,
+    name varchar not null,
+    air_date date,
+    preview varchar,
+    primary key (show_id, season, episode)
 );
 
 create table tvshow.user_show (
