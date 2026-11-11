@@ -11,7 +11,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file proto/auth/auth.proto.
  */
 export const file_proto_auth_auth: GenFile = /*@__PURE__*/
-  fileDesc("ChVwcm90by9hdXRoL2F1dGgucHJvdG8SCmNvZGV4LmF1dGgiHQoMVG9rZW5SZXF1ZXN0Eg0KBXRva2VuGAEgASgJIjIKDVRva2VuUmVzcG9uc2USDQoFdG9rZW4YASABKAkSEgoKZXhwaXJhdGlvbhgCIAEoBDJNCgtBdXRoU2VydmljZRI+CgVUb2tlbhIYLmNvZGV4LmF1dGguVG9rZW5SZXF1ZXN0GhkuY29kZXguYXV0aC5Ub2tlblJlc3BvbnNlIgBCmgEKDmNvbS5jb2RleC5hdXRoQglBdXRoUHJvdG9QAVo0Z2l0aHViLmNvbS9jbGVtZW50ZDY0L2NvZGV4L2ludGVybmFsL2F1dGgvcHJvdG87YXV0aKICA0NBWKoCCkNvZGV4LkF1dGjKAgpDb2RleFxBdXRo4gIWQ29kZXhcQXV0aFxHUEJNZXRhZGF0YeoCC0NvZGV4OjpBdXRoYgZwcm90bzM", [file_google_protobuf_empty]);
+  fileDesc("ChVwcm90by9hdXRoL2F1dGgucHJvdG8SCmNvZGV4LmF1dGgiHQoMVG9rZW5SZXF1ZXN0Eg0KBXRva2VuGAEgASgJIkMKDVRva2VuUmVzcG9uc2USDQoFdG9rZW4YASABKAkSEgoKZXhwaXJhdGlvbhgCIAEoBBIPCgd1c2VyX2lkGAMgASgJMk0KC0F1dGhTZXJ2aWNlEj4KBVRva2VuEhguY29kZXguYXV0aC5Ub2tlblJlcXVlc3QaGS5jb2RleC5hdXRoLlRva2VuUmVzcG9uc2UiAEKaAQoOY29tLmNvZGV4LmF1dGhCCUF1dGhQcm90b1ABWjRnaXRodWIuY29tL2NsZW1lbnRkNjQvY29kZXgvaW50ZXJuYWwvYXV0aC9wcm90bzthdXRoogIDQ0FYqgIKQ29kZXguQXV0aMoCCkNvZGV4XEF1dGjiAhZDb2RleFxBdXRoXEdQQk1ldGFkYXRh6gILQ29kZXg6OkF1dGhiBnByb3RvMw", [file_google_protobuf_empty]);
 
 /**
  * @generated from message codex.auth.TokenRequest
@@ -43,6 +43,11 @@ export type TokenResponse = Message<"codex.auth.TokenResponse"> & {
    * @generated from field: uint64 expiration = 2;
    */
   expiration: bigint;
+
+  /**
+   * @generated from field: string user_id = 3;
+   */
+  userId: string;
 };
 
 /**

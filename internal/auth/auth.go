@@ -55,7 +55,7 @@ func (s *AuthServer) Token(
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, "could not sign JWT")
 	}
-	return &authpb.TokenResponse{Token: signed, Expiration: uint64(expires.Unix())}, nil
+	return &authpb.TokenResponse{Token: signed, Expiration: uint64(expires.Unix()), UserId: id.String()}, nil
 }
 
 func Register(server *connect.Server, application *app.App) *AuthServer {

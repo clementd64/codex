@@ -3,6 +3,7 @@ import { AuthService, createUnauthenticatedClient } from "proto";
 export interface Credentials {
   token: string;
   expiration: bigint;
+  userId: string;
 }
 
 interface OIDCConfig {
@@ -38,7 +39,7 @@ async function exchangeTokens(tokens: OIDCTokens): Promise<Credentials> {
   if (tokens.refresh_token) {
     localStorage.setItem(OIDC_REFRESH_TOKEN_KEY, tokens.refresh_token);
   }
-  return { token: response.token, expiration: response.expiration };
+  return { token: response.token, expiration: response.expiration, userId: response.userId };
 }
 
 function random() {

@@ -70,6 +70,7 @@ type TokenResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
 	Expiration    uint64                 `protobuf:"varint,2,opt,name=expiration,proto3" json:"expiration,omitempty"`
+	UserId        string                 `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -118,6 +119,13 @@ func (x *TokenResponse) GetExpiration() uint64 {
 	return 0
 }
 
+func (x *TokenResponse) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
 var File_proto_auth_auth_proto protoreflect.FileDescriptor
 
 const file_proto_auth_auth_proto_rawDesc = "" +
@@ -125,12 +133,13 @@ const file_proto_auth_auth_proto_rawDesc = "" +
 	"\x15proto/auth/auth.proto\x12\n" +
 	"codex.auth\x1a\x1bgoogle/protobuf/empty.proto\"$\n" +
 	"\fTokenRequest\x12\x14\n" +
-	"\x05token\x18\x01 \x01(\tR\x05token\"E\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token\"^\n" +
 	"\rTokenResponse\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12\x1e\n" +
 	"\n" +
 	"expiration\x18\x02 \x01(\x04R\n" +
-	"expiration2M\n" +
+	"expiration\x12\x17\n" +
+	"\auser_id\x18\x03 \x01(\tR\x06userId2M\n" +
 	"\vAuthService\x12>\n" +
 	"\x05Token\x12\x18.codex.auth.TokenRequest\x1a\x19.codex.auth.TokenResponse\"\x00B\x9a\x01\n" +
 	"\x0ecom.codex.authB\tAuthProtoP\x01Z4github.com/clementd64/codex/internal/auth/proto;auth\xa2\x02\x03CAX\xaa\x02\n" +

@@ -15,4 +15,5 @@ message TokenRequest {
 message TokenResponse {
   string token = 1;
   uint64 expiration = 2;
+  string user_id = 3;
 }

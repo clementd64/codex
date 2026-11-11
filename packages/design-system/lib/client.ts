@@ -29,7 +29,7 @@ export function useClient<T extends DescService>(service: T): Client<T> {
       },
       logout() {
         clearRefreshToken();
-        current.current = { token: "", expiration: 0n };
+        current.current = { token: "", expiration: 0n, userId: "" };
         setCredentials(current.current);
         goto("/login", true);
       },

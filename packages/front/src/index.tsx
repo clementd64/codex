@@ -5,6 +5,7 @@ import { Home } from "./components/home";
 import { LayoutMixin } from "./components/layout";
 import { TvShow } from "tvshow";
 import { Game } from "game";
+import { User } from "./components/user";
 
 const menu = [
   {
@@ -22,7 +23,8 @@ const menu = [
   {
     name: "User",
     icon: "icon-[mdi--user]",
-    path: "",
+    path: "/user",
+    pattern: new URLPattern({ pathname: "/user" }),
     bottom: true,
   },
 ];
@@ -35,6 +37,10 @@ const routes = [
   {
     pattern: new URLPattern({ pathname: "/game/*?" }),
     component: LayoutMixin(Game, menu),
+  },
+  {
+    pattern: new URLPattern({ pathname: "/user" }),
+    component: LayoutMixin(User, menu),
   },
   {
     pattern: new URLPattern({ pathname: "/" }),
