@@ -15,41 +15,39 @@ import (
 	"github.com/clementd64/codex/internal/tvshow/tmdb"
 )
 
-func Fetch(ctx context.Context, application *app.App) error {
+type FetchOptions struct {
+	// Limit caps the number of shows refreshed; zero means unlimited.
+	Limit int32
+	// Force refreshes shows regardless of their last sync time.
+	Force bool
+}
+
+func Fetch(ctx context.Context, application *app.App, options FetchOptions) error {
+	if options.Limit < 0 {
+		return errors.New("refresh limit must be non-negative")
+	}
 	client, err := tmdb.NewTMDBClient(application.TMDBApikey)
 	if err != nil {
 		return err
 	}
 	query := tvshowquery.New(application.DB)
 
-	var lastID int32
-	for {
+	ids, err := query.FetchShowBatch(ctx, tvshowquery.FetchShowBatchParams{
+		ForceRefresh: options.Force,
+		Limit:        options.Limit,
+	})
+	if err != nil {
+		return err
+	}
+
+	for _, id := range ids {
 		if err := ctx.Err(); err != nil {
 			return err
 		}
-
-		ids, err := query.FetchShowBatch(ctx, tvshowquery.FetchShowBatchParams{
-			LastID: lastID,
-			Limit:  100,
-		})
-		if err != nil {
+		if _, err := syncShow(ctx, application.DB, client, id); err != nil {
 			return err
 		}
-
-		if len(ids) == 0 {
-			break
-		}
-
-		for _, id := range ids {
-			if err := ctx.Err(); err != nil {
-				return err
-			}
-			if _, err := syncShow(ctx, application.DB, client, id); err != nil {
-				return err
-			}
-			slog.InfoContext(ctx, "Refreshed TV show", "tmdb_id", id)
-		}
-		lastID = ids[len(ids)-1]
+		slog.InfoContext(ctx, "Refreshed TV show", "tmdb_id", id)
 	}
 	return nil
 }

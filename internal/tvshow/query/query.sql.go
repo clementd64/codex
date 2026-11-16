@@ -44,18 +44,22 @@ func (q *Queries) DeleteUserShow(ctx context.Context, arg DeleteUserShowParams) 
 
 const fetchShowBatch = `-- name: FetchShowBatch :many
 select tmdb_id from tvshow.show
-where tmdb_id > $1
-order by tmdb_id
+where $1::boolean
+   or synced_at <= now() - case
+       when status in ('Ended', 'Canceled') then interval '1 month'
+       else interval '1 week'
+   end
+order by synced_at, tmdb_id
 limit $2
 `
 
 type FetchShowBatchParams struct {
-	LastID int32
-	Limit  int32
+	ForceRefresh bool
+	Limit        int32
 }
 
 func (q *Queries) FetchShowBatch(ctx context.Context, arg FetchShowBatchParams) ([]int32, error) {
-	rows, err := q.db.QueryContext(ctx, fetchShowBatch, arg.LastID, arg.Limit)
+	rows, err := q.db.QueryContext(ctx, fetchShowBatch, arg.ForceRefresh, arg.Limit)
 	if err != nil {
 		return nil, err
 	}

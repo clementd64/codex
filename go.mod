@@ -17,6 +17,7 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/lib/pq v1.12.3
 	github.com/oapi-codegen/runtime v1.7.0
+	github.com/urfave/cli/v3 v3.14.0
 	golang.org/x/oauth2 v0.36.0
 	google.golang.org/protobuf v1.36.12
 )

@@ -25,8 +25,12 @@ select id from tvshow.show where tmdb_id = @tmdb_id;
 
 -- name: FetchShowBatch :many
 select tmdb_id from tvshow.show
-where tmdb_id > @last_id
-order by tmdb_id
+where @force_refresh::boolean
+   or synced_at <= now() - case
+       when status in ('Ended', 'Canceled') then interval '1 month'
+       else interval '1 week'
+   end
+order by synced_at, tmdb_id
 limit @_limit;
 
 
