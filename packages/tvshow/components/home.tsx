@@ -48,10 +48,10 @@ export function Home() {
     <div class="grid gap-4">
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-6 gap-4">
         {data?.results.map((show) => (
-          <div key={show.id} class="card bg-base-200 shadow-md h-full">
+          <div key={show.id} class="card image-full aspect-2/3 shadow-md">
             {show.poster ? (
               <figure>
-                <img src={show.poster} alt="poster" />
+                <img src={show.poster} alt="" />
               </figure>
             ) : null}
 
@@ -60,25 +60,11 @@ export function Home() {
                 <div class={`badge badge-sm ${statusBadgeColor(show.status)}`}>{show.status}</div>
               ) : null}
 
-              <h2 class="card-title text-base">
-                {show.country ? countryCodeToFlag(show.country) : ""} {show.name}
-              </h2>
+              <div class="mt-auto flex justify-between items-end">
+                <h2 class="font-semibold text-base">
+                  {countryCodeToFlag(show.country)} {show.name}
+                </h2>
 
-              {show.originalName && show.originalName !== show.name ? (
-                <p class="text-xs">{show.originalName}</p>
-              ) : null}
-
-              {show.firstAirDate ? (
-                <p class="text-base-content/50">
-                  {new Date(show.firstAirDate).toLocaleDateString(navigator.languages, {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </p>
-              ) : null}
-
-              <div class="card-actions mt-auto justify-end">
                 <ActionButton
                   class="btn-error"
                   onClick={async () => {
