@@ -2,11 +2,14 @@ package cmd
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/base64"
 	"errors"
 	"io/fs"
 	"log/slog"
 	"net/http"
 	"os"
+	"path"
 	"strings"
 	"time"
 
@@ -66,15 +69,49 @@ func frontend() http.Handler {
 		return http.NotFoundHandler()
 	}
 
-	files := os.DirFS(FrontPath)
-
+	files := noModTimeFS{os.DirFS(FrontPath)}
 	fileServer := http.FileServerFS(files)
+
+	// The immutable Nix store path identifies the whole frontend build.
+	sum := sha256.Sum256([]byte(FrontPath))
+	etag := `"` + base64.StdEncoding.EncodeToString(sum[:]) + `"`
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		name := strings.TrimPrefix(r.URL.Path, "/")
+		w.Header().Set("ETag", etag)
+		w.Header().Set("Cache-Control", "no-cache")
+
+		name := strings.TrimPrefix(path.Clean(r.URL.Path), "/")
 		if _, err := fs.Stat(files, name); errors.Is(err, fs.ErrNotExist) {
-			r = r.Clone(r.Context())
-			r.URL.Path = "/"
+			http.ServeFileFS(w, r, files, "index.html")
+			return
 		}
 		fileServer.ServeHTTP(w, r)
 	})
 }
+
+// noModTimeFS hides modification times: Nix normalizes store files to mtime 1.
+// Publishing that Last-Modified date can make caches consider files fresh for
+// years under heuristic freshness, without revalidating them.
+type noModTimeFS struct{ fs.FS }
+
+func (f noModTimeFS) Open(name string) (fs.File, error) {
+	file, err := f.FS.Open(name)
+	if err != nil {
+		return nil, err
+	}
+	return noModTimeFile{file}, nil
+}
+
+type noModTimeFile struct{ fs.File }
+
+func (f noModTimeFile) Stat() (fs.FileInfo, error) {
+	info, err := f.File.Stat()
+	if err != nil {
+		return nil, err
+	}
+	return noModTimeInfo{info}, nil
+}
+
+type noModTimeInfo struct{ fs.FileInfo }
+
+func (noModTimeInfo) ModTime() time.Time { return time.Time{} }
